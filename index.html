@@ -1592,6 +1592,7 @@ function updateDnaUrl() {
     dnaShortenerLink.href = `https://zyonixgaming.github.io/dna/?dna=${encoded}`;
     dnaShortenerLink.classList.add('visible');
   } catch (e) {
+	history.replaceState(null, '', window.location.pathname);
     dnaShortenerLink.classList.remove('visible');
     dnaShortenerLink.href = '#';
   }
