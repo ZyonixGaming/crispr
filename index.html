@@ -1223,10 +1223,18 @@ function renderLibrary() {
       e.stopPropagation();
       const newName = prompt('New category name:', cat.name);
       if (newName && newName.trim()) {
-        cat.name = newName.trim();
-        broadcastUpdate();
-        renderLibrary();
-        showToast(`Category renamed to "${cat.name}"`);
+		reloadCategoriesFromStorage();
+		const targetCat = categories.find(c => c.id === cat.id);
+		if (targetCat) {
+		  targetCat.name = newName.trim();
+		  broadcastUpdate();
+		  renderLibrary();
+		  showToast(`Category renamed to "${cat.name}"`);
+		}		
+        //cat.name = newName.trim();
+        //broadcastUpdate();
+        
+        
       }
     });
 
@@ -1236,6 +1244,7 @@ function renderLibrary() {
     deleteBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (confirm(`Delete category "${cat.name}" and all its DNA?`)) {
+		reloadCategoriesFromStorage();
         categories = categories.filter(c => c.id !== cat.id);
         if (selectedCategoryId === cat.id) selectedCategoryId = null;
         broadcastUpdate();
@@ -1286,10 +1295,18 @@ function renderLibrary() {
           e.stopPropagation();
           const newName = prompt('New name:', entry.name);
           if (newName && newName.trim()) {
-            entry.name = newName.trim();
-            broadcastUpdate();
-            renderLibrary();
-            showToast(`DNA renamed to "${entry.name}"`);
+			reloadCategoriesFromStorage();
+			const targetCat = categories.find(c => c.id === cat.id);
+			if (targetCat) {
+			  const targetEntry = targetCat.entries.find(e => e.id === entry.id);
+			  if (targetEntry) {
+				targetEntry.name = newName.trim();
+				broadcastUpdate();
+				renderLibrary();
+				showToast(`DNA renamed to "${entry.name}"`);
+			  }
+			}			
+            
           }
         });
 
@@ -1311,10 +1328,17 @@ function renderLibrary() {
         entryDelete.addEventListener('click', (e) => {
           e.stopPropagation();
           if (confirm(`Delete DNA "${entry.name}"?`)) {
-            cat.entries = cat.entries.filter(e => e.id !== entry.id);
-            broadcastUpdate();
-            renderLibrary();
-            showToast(`DNA "${entry.name}" deleted`, 'error');
+			reloadCategoriesFromStorage();
+			const targetCat = categories.find(c => c.id === cat.id);
+			if (targetCat) {
+			  targetCat.entries = targetCat.entries.filter(e => e.id !== entry.id);
+			  broadcastUpdate();
+			  renderLibrary();
+			  showToast(`DNA "${entry.name}" deleted`, 'error');
+			}			
+            
+            
+            
           }
         });
 
@@ -1368,9 +1392,11 @@ function handleCategoryDrop(e) {
   target.style.borderTop = '';
   const targetId = target.dataset.categoryId;
   if (!draggedCategoryId || targetId === draggedCategoryId) return;
+  reloadCategoriesFromStorage();
   const draggedIndex = categories.findIndex(c => c.id === draggedCategoryId);
   const targetIndex = categories.findIndex(c => c.id === targetId);
   if (draggedIndex !== -1 && targetIndex !== -1) {
+	
     const [moved] = categories.splice(draggedIndex, 1);
     categories.splice(targetIndex, 0, moved);
     broadcastUpdate();
@@ -1395,11 +1421,13 @@ function handleEntryDrop(e) {
   const target = e.currentTarget;
   target.style.borderTop = '';
   if (!draggedEntryId || !draggedFromCategoryId) return;
+  reloadCategoriesFromStorage();
   const cat = categories.find(c => c.id === draggedFromCategoryId);
   if (!cat || target.dataset.categoryId !== draggedFromCategoryId) return;
   const draggedIndex = cat.entries.findIndex(ent => ent.id === draggedEntryId);
   const targetIndex = cat.entries.findIndex(ent => ent.id === target.dataset.entryId);
   if (draggedIndex !== -1 && targetIndex !== -1 && draggedIndex !== targetIndex) {
+	
     const [moved] = cat.entries.splice(draggedIndex, 1);
     cat.entries.splice(targetIndex, 0, moved);
     broadcastUpdate();
@@ -1418,6 +1446,7 @@ function handleDragEnd() {
 function addCategory() {
   const name = prompt('Category name:');
   if (!name || !name.trim()) return;
+  reloadCategoriesFromStorage();
   const newCat = { id: generateId(), name: name.trim(), entries: [] };
   categories.push(newCat);
   broadcastUpdate();
@@ -1429,6 +1458,7 @@ function addCategory() {
 // Save current DNA
 function saveCurrentDna() {
   if (!selectedCategoryId) { alert('Please select a category first.'); return; }
+  reloadCategoriesFromStorage();
   const cat = categories.find(c => c.id === selectedCategoryId);
   if (!cat) return;
   syncTextareaFromTable();
@@ -1436,6 +1466,7 @@ function saveCurrentDna() {
   if (!dnaText.trim()) { alert('DNA editor is empty.'); return; }
   const name = prompt('Name for this DNA snapshot:', `DNA ${new Date().toLocaleTimeString()}`);
   if (!name || !name.trim()) return;
+  
   cat.entries.push({ id: generateId(), name: name.trim(), dnaText });
   broadcastUpdate();
   renderLibrary();
@@ -1465,6 +1496,7 @@ document.getElementById('importFileInput').addEventListener('change', function(e
     try {
       const imported = JSON.parse(ev.target.result);
       if (!Array.isArray(imported)) throw new Error('Invalid format');
+	  reloadCategoriesFromStorage();
       imported.forEach(cat => {
         if (!cat.name || typeof cat.name !== 'string') throw new Error('Invalid category');
         const newCatId = generateId();
