@@ -1553,6 +1553,7 @@ function syncTextareaFromTable(){
 function updateDnaUrl() {
   const rawText = document.getElementById('rawGeneInput').value.trim();
   if (!rawText) {
+  
     history.replaceState(null, '', window.location.pathname);
     dnaShortenerLink.classList.remove('visible');
     dnaShortenerLink.href = '#';
@@ -1695,20 +1696,21 @@ function loadFromUrl() {
 }
 
 
-
-
+document.getElementById("rawGeneInput").value = "";
+  loadFromUrl();
+  
 window.addEventListener('load', () => {
   // Ensure default category is saved if this is the first visit
   if (!localStorage.getItem(STORAGE_KEY_LIBRARY)) {
     saveCategories();
   }
   // ... (rest of initialization) ...
-document.getElementById("rawGeneInput").value = "";
+
 loadBookmarks();
 parseAndLoadFromTextarea();
 setupHelixNav();
   
-  loadFromUrl();
+
   renderLibrary();
   // Select first category if none selected
   if (!selectedCategoryId && categories.length > 0) {
