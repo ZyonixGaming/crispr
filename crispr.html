@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CRISPR 2.0</title>
+    <style>
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", "Roboto", "Courier New", monospace;
+}
+body {
+  background: #1e2a2e;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  color: #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  max-width: 1350px;
+  margin: 0 auto;
+  background: #11181c;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.left-sidebar {
+  width: 250px;
+  background: #0f172a;
+  border-right: 2px solid #2d3a46;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+.sidebar-header,
+.controls-section,
+.textarea-section {
+  text-align: center;
+}
+.sidebar-header h1 {
+  font-size: 1.2rem;
+  margin: 8px 0 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.controls-section {
+  padding: 16px;
+  border-bottom: 1px solid #2d3a46;
+}
+.textarea-section {
+  padding: 16px;
+  border-bottom: 1px solid #2d3a46;
+}
+.textarea-section label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+  color: #9ca3af;
+  text-align: left;
+}
+.left-sidebar textarea {
+  background: #0f1720;
+  border: 1px solid #334155;
+  color: #cbd5e6;
+  border-radius: 16px;
+  padding: 10px 12px;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  resize: vertical;
+  width: 100%;
+  text-align: left;
+}
+.btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+button {
+  background: #2d3e44;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 40px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  font-family: monospace;
+  font-weight: 600;
+  flex: 1;
+  min-width: 80px;
+}
+button.primary {
+  background: #2c6e6e;
+  border-bottom: 2px solid #48b5b5;
+}
+button.success {
+  background: #2b6e4c;
+  border-bottom: 2px solid #67b886;
+}
+button.compare-toggle {
+  background: #4b3b6e;
+  border-bottom: 2px solid #8b6ed9;
+}
+button.compare-toggle.active {
+  background: #6b4e9e;
+  border-bottom-color: #c49eff;
+}
+button.small {
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  min-width: auto;
+}
+button.icon-btn {
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  min-width: auto;
+  background: #4b5563;
+  border-bottom: none;
+}
+button.icon-btn:hover {
+  background: #6b7280;
+}
+button.clear-btn {
+  background: #7f4a4a;
+  border-bottom: none;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  min-width: auto;
+}
+button.clear-btn:hover {
+  background: #9b5e5e;
+}
+.textarea-with-clear {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.clear-textarea-btn {
+  align-self: flex-end;
+  margin-top: 4px;
+}
+.right-sidebar {
+  width: 280px;
+  background: #0f172a;
+  border-left: 2px solid #2d3a46;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+.helix-nav,
+.bookmarks-section,
+.saved-dna-section {
+  text-align: center;
+  padding: 16px;
+  border-bottom: 1px solid #2d3a46;
+}
+.helix-nav h3,
+.bookmarks-section h3,
+.saved-dna-section h3 {
+  font-size: 0.8rem;
+  margin: 0 0 12px 0;
+  color: #b9c7d9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+.saved-dna-section h3 {
+  margin-bottom: 8px;
+}
+.helix-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+.helix-btn {
+  background: #1e293b;
+  border: 1px solid #475569;
+  padding: 4px 4px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+  font-family: monospace;
+  min-width: 30px;
+  max-width: 30px;
+}
+.helix-btn:hover {
+  background: #3b4e6b;
+}
+.bookmarks-list,
+.saved-dna-list {
+  max-height: 340px;
+  overflow-y: auto;
+  text-align: left;
+}
+.bookmark-item,
+.dna-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  margin: 4px 0;
+  background: #1e293b;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-family: monospace;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.bookmark-item:hover,
+.dna-item:hover {
+  background: #2d3e44;
+}
+.bookmark-info,
+.dna-info {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bookmark-info strong {
+  color: #facc15;
+}
+.bookmark-value-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  margin-left: 6px;
+}
+.remove-bookmark,
+.delete-dna,
+.compare-load-btn {
+  background: #7f4a4a;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  margin-left: 8px;
+  flex: 0;
+  min-width: auto;
+}
+.compare-load-btn {
+  background: #4b3b6e;
+  border-bottom: 2px solid #8b6ed9;
+  font-weight: bold;
+}
+.compare-load-btn:hover {
+  background: #6b4e9e;
+  filter: brightness(1.05);
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 8px 8px;
+  background: #11181c;
+  position: relative;
+  min-width: 0;
+}
+.table-wrapper {
+  background: #0f172a;
+  border-radius: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  width: 100%;
+}
+.gene-table {
+  width: auto;
+  min-width: 730px;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: "Courier New", "Fira Code", monospace;
+  margin: 0 auto;
+}
+.gene-table thead tr:first-child th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.gene-table th {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 10px 8px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+.filter-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+.filter-input {
+  flex: 1;
+  background: #0f1720;
+  border: 1px solid #475569;
+  margin: 8px;
+  color: #e2e8f0;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-family: monospace;
+  text-align: center;
+  max-width: 300px;
+}
+.clear-filter-btn {
+  width: 36px;
+  max-width: 36px;
+  min-width: auto;
+  background: #7f4a4a;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}
+.clear-filter-btn:hover {
+  background: #9b5e5e;
+}
+.gene-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #2d3a4a;
+  vertical-align: middle;
+  text-align: center;
+}
+.gene-table tr.helix-even {
+  background-color: #0f172a;
+  scroll-margin-top: 36px;
+}
+.gene-table tr.helix-odd {
+  background-color: #1a2533;
+  scroll-margin-top: 36px;
+}
+.bookmark-col {
+  width: 40px;
+  text-align: center;
+}
+.bookmark-star {
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.1s;
+  display: inline-block;
+}
+.bookmark-star.bookmarked {
+  color: #facc15;
+  text-shadow: 0 0 2px #ffd966;
+}
+.bookmark-star:not(.bookmarked) {
+  color: #4b5563;
+}
+.helix-col,
+.pair-col {
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+.desc-td {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #b9c7d9;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.desc-td:hover {
+  white-space: normal;
+  word-break: break-word;
+}
+select.nuc-select {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 0.85rem;
+  border-radius: 28px;
+  padding: 5px 10px;
+  cursor: pointer;
+  text-align: left;
+  width: 100px;
+  transition: 0.1s;
+  border: 1px solid #4b5563;
+  background-color: #0a0f18;
+  color: white;
+}
+select.nuc-select.A-selected {
+  background-color: #facc15;
+  color: #1e1a0a;
+  border-color: #facc15;
+}
+select.nuc-select.C-selected {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+select.nuc-select.G-selected {
+  background-color: #22c55e;
+  color: #0a2f1a;
+  border-color: #22c55e;
+}
+select.nuc-select.T-selected {
+  background-color: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+.final-value-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.helix-highlight {
+  background-color: #2c6e6e !important;
+  transition: background 0.1s;
+}
+.diff-highlight {
+  background-color: rgba(255, 140, 100, 0.25) !important;
+}
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2c6e6e;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 40px;
+  font-size: 1rem;
+  font-weight: bold;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+}
+.empty-bookmarks {
+  color: #7e8a98;
+  font-style: italic;
+  text-align: center;
+  padding: 12px;
+  font-size: 0.7rem;
+}
+
+button.diversity-remove {
+  background: #8b5a2b;
+  border-bottom: 2px solid #d49b3a;
+  transition: all 0.2s;
+}
+button.diversity-remove:hover {
+  background: #a06d36;
+  transform: scale(0.98);
+}
+button.random-diversity {
+  background: #2b6e4c;
+  border-bottom: 2px solid #67b886;
+}
+button.random-diversity:hover {
+  background: #348e5c;
+  transform: scale(0.98);
+}
+/* Style the dropdown options with nucleotide colors and thick border */
+select.nuc-select option {
+  background-color: #0a0f18;
+  color: white;
+  transition: all 0.1s ease;
+  border: 3px solid white !important;
+  border-radius: 8px;
+  margin: 2px;
+  padding: 4px 8px;
+}
+
+/* Override browser hover effect */
+select.nuc-select option:hover,
+select.nuc-select option:focus,
+select.nuc-select option:active {
+  filter: brightness(0.85);
+  border-color: #fff !important;
+  font-weight: bold;
+}
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+  color: #add8e6; /* Example: Light Blue */
+  font-weight: bold;
+  text-decoration: none; /* Optional: adds underline back */
+  
+}
+
+    </style>
+</head>
+<body>
+<div class="app-layout">
+  <!-- LEFT SIDEBAR -->
+  <div class="left-sidebar">
+    <div class="sidebar-header">
+      <h1>🧬 CRISPR 2.0</h1>
+    </div>
+
+    <div class="controls-section">
+      <div class="btn-group">
+        <button id="pasteBtn" class="primary">PASTE</button>
+        <button id="exportBtn" class="success">COPY</button>
+      </div>
+    </div>
+
+    <div class="textarea-section">
+      <label>✏️ GENE DATA (To edit)</label>
+      <div class="textarea-with-clear">
+        <textarea id="rawGeneInput" rows="20" placeholder='Example:
+0:ATATGGCTTC
+0:CTATGGACTC
+1:TATAGCAACCTCA
+1:TATAGCAACCTCA'></textarea>
+        <button id="clearRawBtn" class="clear-btn clear-textarea-btn">✖ Clear</button>
+      </div>
+    </div>
+
+    <!-- Compare Mode Toggle + compare textarea -->
+    <div class="controls-section textarea-section" style="border-top: 1px solid #2d3a46;">
+      <div class="btn-group">
+        <button id="toggleCompareBtn" class="compare-toggle">⚖️ COMPARE MODE (OFF)</button>
+      </div>
+      <div id="compareArea" style="display: none; margin-top: 12px;">
+        <label>📊 GENE DATA (To compare)</label>
+        <div class="textarea-with-clear">
+          <textarea id="compareGeneInput" rows="10" placeholder='Paste reference genes:
+0:ATATGGCTTC
+0:CTATGGACTC
+...'></textarea>
+          <button id="clearCompareBtn" class="clear-btn clear-textarea-btn">✖ Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: REMOVE DIVERSITY BUTTON (below compare section) -->
+    <div class="controls-section" style="border-top: none; padding-top: 8px; padding-bottom: 16px">
+      <div class="btn-group" style="flex-direction: column; gap: 8px;">
+        <button id="removeDiversityBtn" class="diversity-remove" style="background: #8b5a2b; border-bottom-color: #d49b3a;">🧬 REMOVE DIVERSITY</button>
+        <button id="randomDiversityBtn" class="random-diversity" style="background: #2b6e4c; border-bottom-color: #67b886;">🎲 RANDOM DIVERSITY</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN TABLE AREA -->
+  <div class="main-content" id="mainContent">
+    <div class="filter-cell"><label>🔍 Search: </label><input type="text" id="filterInput" class="filter-input" placeholder="" value=""><button id="clearFilterBtn" class="clear-filter-btn">✖</button> </div>
+    <div class="table-wrapper">
+      <table class="gene-table" id="geneTable">
+        <thead id="dynamicThead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR: helix jump + bookmarks + saved DNA -->
+  <div class="right-sidebar">
+    <div class="helix-nav">
+      <h3>📑 GO TO HELIX (0–19)</h3>
+      <div class="helix-buttons" id="helixNavButtons"></div>
+    </div>
+
+    <div class="bookmarks-section">
+      <h3>⭐ BOOKMARKS <span style="font-size:0.65rem;"></span></h3>
+      <div id="bookmarksList" class="bookmarks-list">
+        <div class="empty-bookmarks">No bookmarks yet.<br>Click ★ a row to add.</div>
+      </div>
+    </div>
+
+    <div class="saved-dna-section">
+      <h3>
+        🧬 SAVED DNA
+        <button id="saveDnaBtn" class="primary" style="background: #4b3b6e; border-bottom-color: #8b6ed9; padding: 4px 12px; font-size: 0.7rem;">💾 SAVE</button>
+      </h3>
+      <div id="savedDnaList" class="saved-dna-list">
+        <div class="empty-bookmarks">No saved DNA profiles.<br>Click "SAVE" to store.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ========== FULL MAPPING h,p,description,priority,a,c,g,t,m,s ==========
+const ORIGINAL_MAPPING = [
+  [0, 1, "BONES", "GCAT", 14, -14, 0, 0, 95, 100],
+  [0, 2, "BONES2", "TGCA", 0, -16, 16, 0, 60, 100],
+  [0, 3, "OSTODERM", "GATC", 0, 2, 1, 1, 100, 1],
+  [0, 4, "OSTO_SIZE", "TACG", 15, 45, 30, 30, 100, 100],
+  [0, 5, "GIANT_DWARF", "GACT", 66, 133, 100, 100, 100, 100],
+  [0, 6, "TAIL_BOTTOM", "GTCA", 0, 0, 0, 1, 100, 1],
+  [0, 7, "LEG_STRETCH2", "ATCG", 0, 16, 0, -16, 100, 100],
+  [0, 8, "ARM_STRETCH2", "TCAG", 16, -16, 0, 0, 100, 100],
+  [0, 9, "HEAD_THICK_SKULL", "TGAC", 0, 0, 20, 0, 100, 100],
+  [0, 10, "NECK_STIFF", "CATG", 1, 0, 1, 0, 100, 1],
+  [1, 1, "GUT", "TGAC", 45, 0, 25, 0, 100, 100],
+  [1, 2, "GUT_IS_UDDER", "ACGT", 0, 1, 0, 2, 100, 1],
+  [1, 3, "DERRIERE", "CTGA", 10, 0, 70, 40, 85, 100],
+  [1, 4, "LEG_IS_CIRCLE", "ATGC", 0, 0, 0, 1, 100, 1],
+  [1, 5, "FOOT_IS_CIRCLE", "GACT", 1, 0, 0, 0, 100, 1],
+  [1, 6, "TONGUE", "CGAT", 60, 0, 40, 0, 100, 100],
+  [1, 7, "TONGUE_SEGS", "ACGT", 0, 1, 2, 0, 100, 1],
+  [1, 8, "BELLY_ALT", "TACG", 1, 2, 1, 0, 100, 1],
+  [1, 9, "PAT_BELLY", "ACTG", 100, 50, 75, 33, 100, 100],
+  [1, 10, "LITTER_SIZE", "CTAG", 3, 1, 5, 2, 100, 1],
+  [1, 11, "OLD_AGE", "TACG", 0, -1, 2, 0, 100, 1],
+  [1, 12, "OMNIVORE", "CATG", 1, 0, 0, 0, 100, 1],
+  [1, 13, "LIMP", "AGTC", 0, 2, 1, 0, 100, 1],
+  [2, 1, "MUSCLE_USE", "CTAG", 80, 100, 100, 50, 100, 100],
+  [2, 2, "TAIL_STIFF", "ATGC", 0, 1, 0, 1, 100, 1],
+  [2, 3, "LEG_FLEXIBILITY", "GTCA", 50, 40, 30, 20, 80, 1],
+  [2, 4, "LEG_FLEX_BIAS", "CGAT", 10, 15, 20, -10, 100, 1],
+  [2, 5, "TAIL_FLEXIBILITY", "GTAC", 45, 15, 135, 90, 100, 1],
+  [2, 6, "TAIL_SPEED", "GCAT", 60, 200, 60, 0, 100, 10],
+  [2, 7, "LEG_AND_ARM_LIMP", "TAGC", 0, 1, 0, 0, 100, 1],
+  [2, 8, "ARM_STRENGTH", "ATCG", 95, 80, 104, 120, 60, 100],
+  [2, 9, "ARM_FLEXIBILITY", "ACTG", 30, 20, 30, 40, 100, 1],
+  [2, 10, "ARM_FLEX_BIAS", "GCTA", 0, 20, 15, 10, 100, 1],
+  [2, 11, "NECK_FLEXIBILITY", "GTCA", 0, 40, 23, 10, 100, 1],
+  [2, 12, "NECK_FLEX_BIAS", "GATC", 0, 30, -8, -25, 100, 1],
+  [2, 13, "BRAIN_SPASTIC", "TGAC", 2, 0, 1, 0, 100, 1],
+  [3, 1, "SPLAY", "ACTG", 0, 10, 45, -5, 100, 1],
+  [3, 2, "LEG_IN", "CGAT", 6, 0, 18, 0, 50, 100],
+  [3, 3, "LEG_IN2", "CGAT", 0, 0, 13, 1, 100, 100],
+  [3, 4, "TAIL_ANGLE", "GCAT", 135, 90, 45, 60, 100, 1],
+  [3, 5, "TAIL_JOINT_TYPE", "ATGC", 0, 0, 0, 1, 100, 1],
+  [3, 6, "LEG_JOINT_TYPE", "AGTC", 0, 0, 1, 2, 100, 1],
+  [3, 7, "HAS_KNEE", "TCGA", 0, 1, 0, 0, 100, 1],
+  [3, 8, "KNEE_MIN", "CGAT", -15, 0, -90, 0, 100, 1],
+  [3, 9, "KNEE_MAX", "TAGC", 90, 20, 45, 20, 100, 1],
+  [3, 10, "ARM_JOINT_TYPE", "GCTA", 0, 1, 0, 2, 100, 1],
+  [3, 11, "HAS_ELBOW", "CATG", 1, 0, 0, 0, 100, 1],
+  [3, 12, "ELBOW_RANGE", "CTAG", 10, 30, 30, 90, 100, 1],
+  [3, 13, "NECK_JOINT_TYPE", "TGCA", 0, 2, 0, 1, 100, 1],
+  [3, 14, "HEAD_JOINTED", "CATG", 1, 0, 0, 0, 100, 1],
+  [3, 15, "STIFF_JOINTS", "CGAT", 50, 0, 18, 0, 100, 100],
+  [4, 1, "LEG_TAG", "ATGC", 1, 3, 4, 2, 100, 1],
+  [4, 2, "LEG_HAS_FOOT", "GACT", 1, 0, 1, 0, 100, 1],
+  [4, 3, "LEG_COUNT", "CGTA", 7, 1, 1, 2, 100, 1],
+  [4, 4, "LEG_THRUST_BACK", "GCTA", 2, 1, 0, 0, 100, 1],
+  [4, 5, "ARM_TAG", "GTAC", 4, 3, 1, 2, 100, 1],
+  [4, 6, "ARM_HAS_HAND", "CGTA", 0, 1, 0, 1, 100, 1],
+  [4, 7, "NECK_TAG", "AGTC", 4, 2, 3, 1, 100, 1],
+  [4, 8, "NECK_SLOUCH", "CTGA", 0, 0, 20, 50, 60, 100],
+  [4, 9, "NECK_ONTOP", "GTCA", 20, 70, 0, 50, 100, 100],
+  [4, 10, "BREAK_FORCE", "GATC", 50, 30, 0, 0, 100, 10],
+  [4, 11, "EAR_X", "TAGC", 100, 0, 50, 0, 90, 100],
+  [5, 1, "QUADRUPED", "CGAT", 1, 1, 0, 0, 100, 1],
+  [5, 2, "BIPED", "TAGC", 1, 1, 0, 0, 100, 1],
+  [5, 3, "UPARM_TAG", "ATCG", 0, 1, 4, 2, 100, 1],
+  [5, 4, "UPARM_Y", "CTAG", 30, 30, 50, 10, 80, 100],
+  [5, 5, "UPARM_GOOFY", "ACGT", 0, 1, 2, 3, 100, 1],
+  [5, 6, "ARM_FORWARD", "CTGA", 40, -20, 60, 0, 100, 1],
+  [5, 7, "UPARM_ANGLE", "GCAT", -30, 30, 0, -45, 100, 1],
+  [5, 8, "WHITE_IS_LETHAL", "AGCT", 0, 0, 1, 0, 100, 1],
+  [6, 1, "SIZE", "ATGC", 100, 75, 35, 50, 95, 100],
+  [6, 2, "ASPECT", "GCAT", 150, 310, 200, 250, 95, 100],
+  [6, 3, "SKINNY", "GACT", 200, 100, 100, 75, 100, 100],
+  [6, 4, "CHEST_BIG", "ATCG", 104, 108, 102, 102, 100, 100],
+  [6, 5, "CHEST_SMALL", "GCTA", 95, 100, 95, 90, 100, 100],
+  [6, 6, "NECK_TYPE", "TACG", 1, 2, 0, 1, 100, 1],
+  [6, 7, "NECK_LENGTH", "ATGC", 60, 30, 90, 70, 90, 100],
+  [6, 8, "NECK_GIRAFFE", "TCAG", 85, 0, 120, 110, 90, 100],
+  [6, 9, "NECK_THICKNESS", "CGTA", 80, 95, 110, 120, 60, 100],
+  [6, 10, "NECK_ANGLE", "TACG", 30, 60, 75, 45, 90, 1],
+  [6, 11, "NECK_COCK", "CGAT", 20, 0, 30, -25, 100, 1],
+  [7, 1, "TAIL_TAG", "TAGC", 4, 1, 2, 3, 100, 1],
+  [7, 2, "TAIL_EXISTS", "GCAT", 1, 0, 1, 2, 100, 1],
+  [7, 3, "TAIL_SIZE", "GCAT", 120, 80, 100, 140, 60, 100],
+  [7, 4, "TAIL_SHORT", "CAGT", 50, 100, 35, 100, 100, 100],
+  [7, 5, "TAIL_ASPECT", "AGCT", 20, 30, 10, 20, 90, 100],
+  [7, 6, "TAIL_SHAPE", "AGTC", 2, 6, 1, 5, 100, 1],
+  [7, 7, "TAIL_SEGMENTS", "GTCA", 5, 3, 3, 0, 100, 1],
+  [7, 8, "TAIL_WAG", "CTGA", 0, 1, 0, 0, 100, 1],
+  [8, 1, "LEG_TYPE", "TACG", 2, 0, 1, 1, 100, 1],
+  [8, 2, "LEG_LENGTH", "CATG", 50, 80, 100, 120, 90, 100],
+  [8, 3, "LEG_STRETCH", "GACT", 14, -14, 0, 0, 60, 100],
+  [8, 4, "LEG_SKEW", "TCGA", 0, 24, -16, 0, 60, 100],
+  [8, 5, "LEG_STRENGTH", "GCTA", 104, 120, 95, 80, 60, 100],
+  [8, 6, "LEG_PENCIL", "ATGC", 0, 0, 0, 10, 100, 100],
+  [8, 7, "ARM_TYPE", "CGAT", 0, 1, 2, 0, 100, 1],
+  [8, 8, "ARM_LENGTH", "ATCG", 80, 120, 25, 50, 90, 100],
+  [8, 9, "ARM_STRETCH", "GACT", 14, -14, 0, 0, 60, 100],
+  [8, 10, "ARM_SKEW", "TCGA", 0, 20, -20, 0, 100, 100],
+  [8, 11, "ARM_NODE_SCALE", "CTGA", 100, 100, 130, 70, 50, 100],
+  [9, 1, "HAS_FOOT", "TACG", 0, 1, 0, 1, 100, 1],
+  [9, 2, "FOOT_SIZE", "GTAC", 12, 30, 0, 20, 60, 100],
+  [9, 3, "FOOT_CLOWN", "GTAC", 0, 0, 0, 30, 100, 100],
+  [9, 4, "FOOT_THICKNESS", "TCAG", 30, 15, 7, 20, 80, 100],
+  [9, 5, "FOOT_TOE", "AGCT", 100, 50, 0, 100, 100, 100],
+  [9, 6, "FOOT_BACKWARDS", "AGCT", 0, 0, 1, 2, 100, 1],
+  [9, 7, "HAS_HAND", "CGTA", 1, 0, 1, 0, 100, 1],
+  [9, 8, "HAND_WIDTH", "GACT", 7, 20, 0, 0, 100, 100],
+  [9, 9, "HAND_LENGTH", "CGAT", 15, 20, 30, 20, 90, 100],
+  [9, 10, "HAND_FINGER", "CTGA", 50, 0, 0, 100, 80, 100],
+  [9, 11, "SKIN_HANDS", "GCAT", 0, 1, 0, 2, 100, 1],
+  [10, 1, "HEAD_SIZE", "GCTA", 75, 50, 100, 133, 95, 100],
+  [10, 2, "HEAD_X_GROWTH", "ACGT", 0, 5, 10, -5, 100, 100],
+  [10, 3, "HEAD_Y_GROWTH", "TACG", 5, -5, 0, 0, 100, 100],
+  [10, 4, "HEAD_ASPECT", "TCAG", 250, 175, 300, 200, 85, 100],
+  [10, 5, "HEAD_SQUARE", "CTAG", 100, 0, 0, 150, 100, 100],
+  [10, 6, "HEAD_HAS_BACK", "GTCA", 1, 0, 11, 0, 100, 1],
+  [10, 7, "HEAD_GIANT", "CTAG", 180, 100, 100, 200, 90, 100],
+  [10, 8, "HEAD_SHRUNK", "CATG", 70, 100, 100, 50, 90, 100],
+  [10, 9, "HEAD_CHIMERA", "ATCG", 0, 0, 0, 1, 100, 1],
+  [10, 10, "EYEBOX_X", "AGCT", 33, 50, 0, 15, 90, 100],
+  [10, 11, "EYEBOX_Y", "CGTA", -25, -100, 0, -50, 100, 100],
+  [10, 12, "EYEBOX_SIZE", "ATGC", 25, 50, 33, 15, 60, 100],
+  [10, 13, "SKIN_HEAD", "GCAT", 0, 1, 0, 2, 100, 1],
+  [11, 1, "EYE_STYLE", "CATG", 2, 1, 0, 1, 100, 1],
+  [11, 2, "BUGEYE", "GACT", 1, 0, 0, 2, 100, 1],
+  [11, 3, "EYE_SIZE", "ACTG", 50, 75, 50, 125, 100, 100],
+  [11, 4, "PUPIL_SIZE", "CAGT", 80, 66, 40, 40, 100, 100],
+  [11, 5, "HAS_PUPIL", "ATCG", 1, 0, 0, 0, 100, 1],
+  [11, 6, "BROW_SIZE", "GATC", 150, 0, 0, 125, 100, 100],
+  [11, 7, "BROW_SLANT", "GTAC", 15, 0, 0, -15, 100, 1],
+  [11, 8, "EYE_HUE", "GCTA", 198, 237, 36, 153, 100, 1],
+  [11, 9, "EAR_STYLE", "TGCA", 0, 0, 2, 1, 100, 1],
+  [11, 10, "EAR_SHAPE", "CGAT", 4, 2, 1, 2, 100, 1],
+  [11, 11, "EAR_SIZE", "TCGA", 40, 30, 10, 20, 70, 100],
+  [11, 12, "EAR_ASPECT", "ATCG", 100, 300, 100, 250, 100, 100],
+  [11, 13, "EAR_SLANT", "GACT", 100, 50, 0, -33, 70, 100],
+  [11, 14, "EAR_INTERIOR", "TAGC", 0, 0, 0, 5, 100, 100],
+  [11, 15, "EAR_FLOP", "CTAG", 60, 0, 200, 30, 100, 1],
+  [12, 1, "TEETH_SHAPE", "TCGA", 3, 1, 2, 0, 100, 1],
+  [12, 2, "HAS_MOUTH", "TCGA", 1, 1, 0, 1, 100, 1],
+  [12, 3, "MOUTH_Y", "CGAT", 50, 70, 84, 100, 80, 100],
+  [12, 4, "MOUTH_SIZE", "CTGA", 40, 20, 10, 30, 70, 100],
+  [12, 5, "JAW", "CAGT", 15, 0, -8, -13, 50, 100],
+  [12, 6, "TEETH_UPPER", "GATC", 0, 0, 1, 0, 100, 1],
+  [12, 7, "TEETH_UPPER2", "CATG", 0, 1, 0, 0, 100, 1],
+  [12, 8, "NOSE_STYLE", "GTCA", 0, 3, 1, 2, 100, 1],
+  [12, 9, "NOSE_INNY", "GCTA", 0, 1, 0, 0, 100, 1],
+  [12, 10, "NOSE_Y", "CTAG", 50, 0, 0, 100, 90, 100],
+  [12, 11, "NOSE_SIZE", "AGCT", 10, 20, 5, 100, 70, 100],
+  [12, 12, "NOSE_INTERIOR", "ATGC", 0, 0, 50, 100, 100, 100],
+  [12, 13, "FLU_IMMUNITY", "CATG", 0, 0, 1, 0, 100, 1],
+  [13, 1, "HAS_ANTLERS", "CTGA", 1, 1, 1, 0, 100, 1],
+  [13, 2, "ANTLER_X", "TGAC", 2, 1, 0, 1, 100, 1],
+  [13, 3, "ANTLER_W", "TACG", 12, 8, 12, 15, 100, 100],
+  [13, 4, "ANTLER_H", "TACG", 45, 100, 25, 65, 80, 100],
+  [13, 5, "ANTLER_TAPER", "CGAT", 50, 0, 100, 100, 100, 100],
+  [13, 6, "ANTLER_POM", "CTGA", 100, 0, 200, 150, 100, 100],
+  [13, 7, "ANTLER_COLOR", "ACGT", 2, 8, 1, 3, 100, 1],
+  [13, 8, "POM_COLOR", "GCTA", 17, 0, 2, 1, 100, 1],
+  [13, 9, "POM_USECOLOR", "GTAC", 0, 0, 1, 0, 100, 1],
+  [13, 10, "HAT_POM", "TGAC", 50, 0, 25, 0, 100, 100],
+  [13, 11, "HAT_POM_IS_LID", "TAGC", 1, 0, 0, 0, 100, 1],
+  [14, 1, "ANTLER_REC", "TAGC", 1, 0, 3, 2, 100, 1],
+  [14, 2, "ANTLER_REC2", "CTGA", 0, 2, 3, 1, 100, 1],
+  [14, 3, "ANTLER_FLIP", "TACG", 0, 0, 0, 1, 100, 1],
+  [14, 4, "ANTLER_MOD", "TCAG", 1, 2, 3, 3, 100, 1],
+  [14, 5, "ANTLER_SCALEH", "GCTA", 100, 75, 100, 40, 80, 100],
+  [14, 6, "ANTLER_SCALEW", "TCGA", 100, 75, 50, 100, 100, 100],
+  [14, 7, "ANTLER_ANGLE", "GATC", -45, 25, 45, -25, 100, 1],
+  [14, 8, "ANTLER_ANGLE2", "ACTG", 45, -45, -90, 90, 100, 1],
+  [14, 9, "ANTLER_ANGLE_RAND", "GTAC", 45, 15, 0, 5, 100, 1],
+  [14, 10, "ANTLER_T1", "CGAT", 40, 0, 100, 25, 100, 100],
+  [14, 11, "ANTLER_T2", "ATGC", 100, 25, 0, 40, 100, 100],
+  [15, 1, "HAT_EXISTS", "ACTG", 1, 0, 0, 0, 100, 1],
+  [15, 2, "HAT_SIZE", "CATG", 40, 60, 20, 100, 85, 100],
+  [15, 3, "HAT_RAKE", "AGTC", 0, 0, 25, -15, 100, 100],
+  [15, 4, "HAT_ASPECT", "ATGC", 100, 100, 200, 300, 85, 100],
+  [15, 5, "HAT_TAPER", "TGCA", 0, 50, 100, 0, 100, 100],
+  [15, 6, "HAT_CLONE", "CGTA", 0, 0, 33, 66, 100, 100],
+  [15, 7, "HAT_BACK_SCALE", "TAGC", 0, 100, 60, 100, 100, 100],
+  [15, 8, "HAT_FRONT_SCALE", "CGTA", 100, 100, 0, 60, 100, 100],
+  [15, 9, "HAT_BACK_ANGLE", "ACGT", 45, 90, 120, 60, 75, 1],
+  [15, 10, "HAT_FRONT_ANGLE", "CGAT", -120, -45, -90, -60, 100, 1],
+  [15, 11, "HAT_ANGLE_RAND", "TCGA", 15, 15, 45, 0, 100, 1],
+  [15, 12, "HAT_FLIP", "TACG", 1, 0, 0, 0, 100, 1],
+  [15, 13, "HAT_T", "GTAC", 40, 0, 0, 100, 100, 100],
+  [16, 1, "BASE_BROWN", "ATCG", 0, 2, 0, 1, 100, 1],
+  [16, 2, "BASE_BLACK", "TGCA", 1, 0, 1, 0, 100, 1],
+  [16, 3, "BASE_RED", "GTCA", 3, 2, 0, 1, 100, 1],
+  [16, 4, "BASE_GREEN", "TCAG", 2, 1, 3, 0, 70, 1],
+  [16, 5, "GREEN_KNOCKOUT", "CAGT", 1, 0, 0, 0, 100, 1],
+  [16, 6, "BASE_CREAM", "AGCT", 0, 0, 100, 0, 50, 100],
+  [16, 7, "ALT_BLUE", "TAGC", 1, 3, 2, 0, 100, 1],
+  [16, 8, "SPOT_YELLOW", "TGCA", 1, 0, 1, 0, 100, 1],
+  [16, 9, "SKIN_HUE", "CGAT", 2, 0, 1, 3, 100, 1],
+  [16, 10, "SKIN_HUE2", "TAGC", 1, 3, 2, 0, 100, 1],
+  [16, 11, "SWAP_BASE_SPOT", "ATCG", 0, 0, 1, 1, 100, 1],
+  [16, 12, "SWAP_ALT_SPOT", "TGCA", 1, 0, 1, 0, 100, 1],
+  [16, 13, "WHITE", "TAGC", 0, 0, 0, 1, 100, 1],
+  [16, 14, "NOSE_HUE", "GACT", 1, 2, 0, 3, 100, 1],
+  [16, 15, "HOOF_COLOR", "CTAG", 2, 0, 0, 1, 100, 1],
+  [17, 1, "AGOUTI", "ATGC", 1, 1, 0, 0, 100, 1],
+  [17, 2, "FOOT_IS_HOOF", "GACT", 1, 0, 0, 1, 100, 1],
+  [17, 3, "COON_EYE", "GCAT", 2, 1, 0, 0, 100, 1],
+  [17, 4, "EAR_COMP", "GTCA", 1, 2, 0, 0, 100, 1],
+  [17, 5, "TAIL_ALT", "CGTA", 0, 0, 1, 2, 100, 1],
+  [17, 6, "PAT_SPLIT", "CGAT", 65, 0, 100, 0, 100, 100],
+  [17, 7, "PAT_STRIPE", "CTAG", 51, 0, 0, 90, 100, 100],
+  [17, 8, "PAT_SPOT", "ACGT", 0, 90, 51, 0, 100, 100],
+  [17, 9, "PAT_PERLIN", "TCAG", 60, 100, 0, 0, 100, 100],
+  [17, 10, "PAT_PERLIN2", "GTCA", 0, 60, 0, 100, 100, 100],
+  [17, 11, "PAT_PERLIN_SIZE", "GACT", 2, 4, 8, 4, 100, 1],
+  [18, 1, "NARCOLEPSY", "TCGA", 0, 0, 1, 0, 100, 1],
+  [18, 2, "SPEED_FACTOR", "GCAT", 50, 30, 100, 133, 75, 100],
+  [18, 3, "NECK_SPEED", "AGCT", 60, 50, 25, 10, 100, 10],
+  [18, 4, "RAMPAGE", "GATC", 0, 1, 0, 0, 100, 1],
+  [18, 5, "SPINAL_LOCO", "CTGA", 2, 0, 0, 1, 100, 1],
+  [18, 6, "HIGH_INTELLECT", "CTAG", 0, 0, 1, 1, 100, 1],
+  [18, 7, "L_LEG_SIGNAL", "GTCA", 2, 1, 1, 1, 100, 1],
+  [18, 8, "L_ARM_SIGNAL", "CGAT", 2, 2, 2, 1, 100, 1],
+  [18, 9, "L_TAIL_SIGNAL", "ACTG", 3, 1, 4, 2, 100, 1],
+  [18, 10, "L_NECK_SIGNAL", "TGAC", 2, 3, 1, 4, 100, 1],
+  [18, 11, "LOCO_SYNC", "CTGA", 0, 0, 0, 1, 100, 1],
+  [19, 1, "L_LEG_FTOB_REACT", "TCAG", 1, 2, 3, 1, 100, 1],
+  [19, 2, "L_LEG_FTOB_EVENT", "GATC", 1, 4, 3, 2, 100, 1],
+  [19, 3, "L_LEG_BTOF_REACT", "ACGT", 2, 1, 2, 3, 100, 1],
+  [19, 4, "L_LEG_BTOF_EVENT", "TGAC", 1, 4, 3, 2, 100, 1],
+  [19, 5, "L_ARM_FTOB_REACT", "ACGT", 2, 1, 2, 3, 100, 1],
+  [19, 6, "L_ARM_FTOB_EVENT", "TGAC", 2, 4, 1, 3, 100, 1],
+  [19, 7, "L_ARM_BTOF_REACT", "GATC", 2, 3, 1, 1, 100, 1],
+  [19, 8, "L_ARM_BTOF_EVENT", "CATG", 3, 2, 4, 1, 100, 1],
+  [19, 9, "L_TAIL_FTOB_REACT", "CGAT", 3, 0, 1, 2, 100, 1],
+  [19, 10, "L_TAIL_FTOB_EVENT", "TCGA", 4, 2, 3, 1, 100, 1],
+  [19, 11, "L_TAIL_BTOF_REACT", "GTCA", 2, 3, 0, 1, 100, 1],
+  [19, 12, "L_TAIL_BTOF_EVENT", "ATCG", 2, 3, 4, 1, 100, 1],
+  [19, 13, "L_NECK_FTOB_REACT", "GTAC", 4, 2, 0, 1, 100, 1],
+  [19, 14, "L_NECK_FTOB_EVENT", "CATG", 2, 1, 4, 3, 100, 1],
+  [19, 15, "L_NECK_BTOF_REACT", "TCAG", 4, 1, 2, 0, 100, 1],
+  [19, 16, "L_NECK_BTOF_EVENT", "TCAG", 3, 1, 4, 2, 100, 1]
+];
+
+const completeMapping = new Map();
+for (const row of ORIGINAL_MAPPING) {
+  const helix = row[0];
+  const zeroBasedPair = row[1] - 1;
+  const priorityOrder = row[3].split("");
+  completeMapping.set(`${helix}:${zeroBasedPair}`, {
+    helix,
+    pair: zeroBasedPair,
+    desc: row[2],
+    priorityStr: row[3],
+    priorityOrder,
+    values: { A: row[4], C: row[5], G: row[6], T: row[7] },
+    m: row[8], // dominance percentage
+    s: row[9] // secondary field (stored but not used in main calc)
+  });
+}
+const allEntries = Array.from(completeMapping.values()).sort(
+  (a, b) => a.helix - b.helix || a.pair - b.pair
+);
+
+let currentGenePairs = [];
+let compareModeActive = false;
+let referenceMap = new Map();
+let currentFilter = "";
+let bookmarks = new Set();
+let savedDna = [];
+
+let toastTimeout = null;
+
+function getRandomNuc() {
+  return ["A", "C", "G", "T"][Math.floor(Math.random() * 4)];
+}
+function getDominantNuc(a1, a2, priorityOrder) {
+  if (a1 === a2) return a1;
+  const idx1 = priorityOrder.indexOf(a1);
+  const idx2 = priorityOrder.indexOf(a2);
+  if (idx1 === -1) return a2;
+  if (idx2 === -1) return a1;
+  return idx1 < idx2 ? a1 : a2;
+}
+
+function computeWeightedValue(entry, allele1, allele2) {
+  const domNuc = getDominantNuc(allele1, allele2, entry.priorityOrder);
+  const recNuc = domNuc === allele1 ? allele2 : allele1;
+  const domVal = entry.values[domNuc];
+  const recVal = entry.values[recNuc];
+  const m = entry.m;
+  if (m >= 100) return domVal; // pure dominant
+  if (m <= 0) return recVal; // pure recessive
+  const weighted = (domVal * m + recVal * (100 - m)) / 100;
+  //return Math.round(weighted);
+  return Math.floor(weighted);
+}
+
+function parseUserGenes(rawText) {
+  const lines = rawText.split(/\r?\n/).filter((l) => l.trim());
+  const helixSeqMap = new Map();
+  function sanitizeNuc(c) {
+    let upper = c.toUpperCase();
+    if (upper === "A" || upper === "C" || upper === "G" || upper === "T")
+      return upper;
+    return getRandomNuc();
+  }
+  for (const line of lines) {
+    const match = line.match(/^(\d+):(.*)$/);
+    if (!match) continue;
+    const helix = parseInt(match[1]);
+    const seq = match[2].trim();
+    if (!helixSeqMap.has(helix)) helixSeqMap.set(helix, []);
+    const arr = helixSeqMap.get(helix);
+    if (arr.length < 2) arr.push(seq);
+  }
+  const result = new Map();
+  for (const [helix, seqs] of helixSeqMap) {
+    if (seqs.length !== 2) continue;
+    const left = seqs[0];
+    const right = seqs[1];
+    const maxLen = Math.max(left.length, right.length);
+    for (let i = 0; i < maxLen; i++) {
+      const pair = i;
+      const key = `${helix}:${pair}`;
+      if (completeMapping.has(key)) {
+        const a1 = i < left.length ? sanitizeNuc(left[i]) : getRandomNuc();
+        const a2 = i < right.length ? sanitizeNuc(right[i]) : getRandomNuc();
+        result.set(key, { allele1: a1, allele2: a2 });
+      }
+    }
+  }
+  return result;
+}
+
+function buildFullGenePairs(userMap) {
+  return allEntries.map((entry) => {
+    const key = `${entry.helix}:${entry.pair}`;
+    const user = userMap.get(key);
+    return {
+      ...entry,
+      allele1: user ? user.allele1 : getRandomNuc(),
+      allele2: user ? user.allele2 : getRandomNuc()
+    };
+  });
+}
+
+function updateReferenceMapFromText() {
+  const raw = document.getElementById("compareGeneInput").value;
+  const userMap = parseUserGenes(raw);
+  const newMap = new Map();
+  for (const entry of allEntries) {
+    const key = `${entry.helix}:${entry.pair}`;
+    const user = userMap.get(key);
+    if (user) {
+      const weightedVal = computeWeightedValue(
+        entry,
+        user.allele1,
+        user.allele2
+      );
+      newMap.set(key, { weightedValue: weightedVal });
+    } else {
+      newMap.set(key, null);
+    }
+  }
+  referenceMap = newMap;
+}
+
+function syncTextareaFromTable() {
+  const helixMap = new Map();
+  for (const gp of currentGenePairs) {
+    if (!helixMap.has(gp.helix))
+      helixMap.set(gp.helix, { left: [], right: [] });
+    const entry = helixMap.get(gp.helix);
+    entry.left.push(gp.allele1);
+    entry.right.push(gp.allele2);
+  }
+  const lines = [];
+  for (const [helix, seqs] of [...helixMap.entries()].sort(
+    (a, b) => a[0] - b[0]
+  )) {
+    const formatted = helix.toString().padStart(2, "0");
+    lines.push(`${formatted}:${seqs.left.join("")}`);
+    lines.push(`${formatted}:${seqs.right.join("")}`);
+  }
+  document.getElementById("rawGeneInput").value = lines.join("\n");
+}
+
+function parseAndLoadFromTextarea() {
+  const raw = document.getElementById("rawGeneInput").value;
+  const userMap = parseUserGenes(raw);
+  currentGenePairs = buildFullGenePairs(userMap);
+  renderTable();
+  renderBookmarksList();
+}
+
+function renderTable() {
+  let filtered = currentGenePairs.filter((p) =>
+    p.desc.toLowerCase().includes(currentFilter.toLowerCase())
+  );
+  const hasCompare = compareModeActive;
+  const thead = document.getElementById("dynamicThead");
+  thead.innerHTML = `<th style="width:45px;">⭐</th><th>Helix</th><th>Pair</th><th>m</th><th>Description <a href="https://horseygame.miraheze.org/wiki/Genome" target="_blank">(?)</a></th><th colspan="2">Pair 1</th><th colspan="2">Pair 2</th><th>Value</th>${
+    hasCompare ? "<th>Compare</th>" : ""
+  }`;
+
+  let html = "";
+  for (let idx = 0; idx < filtered.length; idx++) {
+    const p = filtered[idx];
+    const origIdx = currentGenePairs.findIndex(
+      (gp) => gp.helix === p.helix && gp.pair === p.pair
+    );
+    const weightedVal = computeWeightedValue(p, p.allele1, p.allele2);
+    const domNuc = getDominantNuc(p.allele1, p.allele2, p.priorityOrder);
+    const rowClass = p.helix % 2 === 0 ? "helix-even" : "helix-odd";
+    const isBookmarked = bookmarks.has(`${p.helix}:${p.pair}`);
+    const createOptions = (currentNuc) =>
+      p.priorityOrder
+        .map(
+          (nuc) =>
+            `<option value="${nuc}" ${
+              currentNuc === nuc ? "selected" : ""
+            }>${nuc} (${p.values[nuc]})</option>`
+        )
+        .join("");
+
+    let refCell = "",
+      diffClass = "";
+    if (hasCompare) {
+      const refData = referenceMap.get(`${p.helix}:${p.pair}`);
+      let refVal = null;
+      if (refData) refVal = refData.weightedValue;
+      if (refVal !== null && weightedVal !== refVal)
+        diffClass = "diff-highlight";
+      refCell = `<td class="compare-cell ${diffClass}"><span class="final-value-badge final-${domNuc}">${
+        refVal !== null ? refVal : "—"
+      }</span>`;
+    }
+
+    html += `<tr class="${rowClass}" data-helix="${p.helix}" data-pair="${
+      p.pair
+    }">
+                <td class="bookmark-col"><span class="bookmark-star ${
+                  isBookmarked ? "bookmarked" : ""
+                }" onclick="toggleBookmarkFromTable(${p.helix}, ${
+      p.pair
+    })">★</span>
+                <td class="helix-col">${p.helix}<td class="pair-col">${
+      p.pair
+    }<td class="desc-td">${p.m}
+                <td class="desc-td" title="${p.desc}">${p.desc}
+                <td colspan="2"><select class="nuc-select" data-idx="${origIdx}" data-side="1">${createOptions(
+      p.allele1
+    )}</select>
+                <td colspan="2"><select class="nuc-select" data-idx="${origIdx}" data-side="2">${createOptions(
+      p.allele2
+    )}</select>
+                <td class="value-cell ${diffClass}"><span class="final-value-badge final-${domNuc}">${weightedVal}</span>
+                ${hasCompare ? refCell : ""}
+            `;
+  }
+  document.getElementById("tableBody").innerHTML = html;
+  attachSelectEvents();
+}
+
+function attachSelectEvents() {
+  document.querySelectorAll(".nuc-select").forEach((select) => {
+    const updateClass = () => {
+      select.classList.remove(
+        "A-selected",
+        "C-selected",
+        "G-selected",
+        "T-selected"
+      );
+      if (select.value === "A") select.classList.add("A-selected");
+      else if (select.value === "C") select.classList.add("C-selected");
+      else if (select.value === "G") select.classList.add("G-selected");
+      else if (select.value === "T") select.classList.add("T-selected");
+    };
+    updateClass();
+    select.addEventListener("change", (e) => {
+      const idx = parseInt(select.dataset.idx);
+      const side = parseInt(select.dataset.side);
+      if (!isNaN(idx) && idx < currentGenePairs.length) {
+        if (side === 1) currentGenePairs[idx].allele1 = select.value;
+        else currentGenePairs[idx].allele2 = select.value;
+        syncTextareaFromTable();
+        renderTable();
+        renderBookmarksList();
+      }
+    });
+  });
+}
+
+const filterInput = document.getElementById("filterInput");
+filterInput.addEventListener("input", (e) => {
+  currentFilter = e.target.value;
+  renderTable();
+});
+document.getElementById("clearFilterBtn").addEventListener("click", () => {
+  filterInput.value = "";
+  currentFilter = "";
+  renderTable();
+});
+
+function setupHelixNav() {
+  const container = document.getElementById("helixNavButtons");
+  const helixes = [...new Set(allEntries.map((e) => e.helix))].sort(
+    (a, b) => a - b
+  );
+  helixes.forEach((h) => {
+    const btn = document.createElement("button");
+    btn.textContent = h;
+    btn.classList.add("helix-btn");
+    btn.addEventListener("click", () => {
+      const firstRow = document.querySelector(`tr[data-helix="${h}"]`);
+      if (firstRow) {
+        firstRow.scrollIntoView({ behavior: "instant", block: "start" });
+        highlightHelixRows(h);
+      }
+      btn.style.background = "#2c6e6e";
+      setTimeout(() => (btn.style.background = "#1e293b"), 500);
+    });
+    container.appendChild(btn);
+  });
+}
+
+function highlightHelixRows(helix) {
+  document
+    .querySelectorAll(`tr[data-helix="${helix}"]`)
+    .forEach((row) => row.classList.add("helix-highlight"));
+  setTimeout(
+    () =>
+      document
+        .querySelectorAll(`tr[data-helix="${helix}"]`)
+        .forEach((row) => row.classList.remove("helix-highlight")),
+    1000
+  );
+}
+
+function toggleCompareMode() {
+  compareModeActive = !compareModeActive;
+  const btn = document.getElementById("toggleCompareBtn"),
+    area = document.getElementById("compareArea");
+  if (compareModeActive) {
+    btn.textContent = "⚖️ COMPARE MODE (ON)";
+    btn.classList.add("active");
+    area.style.display = "block";
+    updateReferenceMapFromText();
+  } else {
+    btn.textContent = "⚖️ COMPARE MODE (OFF)";
+    btn.classList.remove("active");
+    area.style.display = "none";
+    referenceMap.clear();
+  }
+  renderTable();
+}
+function onCompareInput() {
+  if (compareModeActive) {
+    updateReferenceMapFromText();
+    renderTable();
+  }
+}
+
+function loadBookmarks() {
+  const saved = localStorage.getItem("horsey_bookmarks");
+  if (saved) bookmarks = new Set(JSON.parse(saved));
+  renderBookmarksList();
+}
+function saveBookmarks() {
+  localStorage.setItem("horsey_bookmarks", JSON.stringify([...bookmarks]));
+  renderBookmarksList();
+  renderTable();
+}
+function toggleBookmark(helix, pair) {
+  const key = `${helix}:${pair}`;
+  if (bookmarks.has(key)) bookmarks.delete(key);
+  else bookmarks.add(key);
+  saveBookmarks();
+}
+window.toggleBookmarkFromTable = toggleBookmark;
+
+function renderBookmarksList() {
+  const container = document.getElementById("bookmarksList");
+  if (bookmarks.size === 0) {
+    container.innerHTML =
+      '<div class="empty-bookmarks">No bookmarks yet.<br>Click ★ a row to add.</div>';
+    return;
+  }
+  let html = "";
+  for (const key of [...bookmarks].sort()) {
+    const [h, p] = key.split(":").map(Number);
+    const entry = completeMapping.get(key);
+    const desc = entry ? entry.desc : "Unknown";
+    const pairData = currentGenePairs.find(
+      (gp) => gp.helix === h && gp.pair === p
+    );
+    let valueBadge = "";
+    if (pairData && entry) {
+      const weighted = computeWeightedValue(
+        entry,
+        pairData.allele1,
+        pairData.allele2
+      );
+      const dom = getDominantNuc(
+        pairData.allele1,
+        pairData.allele2,
+        entry.priorityOrder
+      );
+      valueBadge = `<span class="bookmark-value-badge final-${dom}" style="margin-left: 6px;">${weighted}</span>`;
+    }
+    html += `<div class="bookmark-item"><div class="bookmark-info" onclick="scrollToPair(${h},${p})"><strong>H${h}P${p}:</strong>  ${desc.substring(
+      0,
+      25
+    )}</div><div style="display: flex; gap: 5px;">${valueBadge}<button class="remove-bookmark" onclick="event.stopPropagation(); removeBookmark('${key}')">✖</button></div></div>`;
+  }
+  container.innerHTML = html;
+}
+window.scrollToPair = function (h, p) {
+  const row = document.querySelector(`tr[data-helix="${h}"][data-pair="${p}"]`);
+  if (row) {
+    row.scrollIntoView({ behavior: "instant", block: "start" });
+    row.classList.add("helix-highlight");
+    setTimeout(() => row.classList.remove("helix-highlight"), 1000);
+  }
+};
+window.removeBookmark = function (key) {
+  bookmarks.delete(key);
+  saveBookmarks();
+};
+
+function loadSavedDna() {
+  const stored = localStorage.getItem("horsey_saved_dna");
+  if (stored) savedDna = JSON.parse(stored);
+  renderSavedDnaList();
+}
+function saveDnaToStorage() {
+  localStorage.setItem("horsey_saved_dna", JSON.stringify(savedDna));
+  renderSavedDnaList();
+}
+function showToast(message, duration = 2000) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+    toastTimeout = null;
+  }, duration);
+}
+function saveCurrentDna() {
+  const name = prompt("Enter a name for this DNA profile:");
+  if (!name || name.trim() === "") return;
+  syncTextareaFromTable();
+  const rawText = document.getElementById("rawGeneInput").value;
+  savedDna.push({ name: name.trim(), rawText });
+  saveDnaToStorage();
+  showToast(`✅ "${name.trim()}" DNA saved.`);
+}
+function loadDnaProfile(rawText, name) {
+  document.getElementById("rawGeneInput").value = rawText;
+  parseAndLoadFromTextarea();
+  showToast(`✅ "${name}" DNA loaded for Editing.`);
+}
+function loadToCompare(rawText, name) {
+  if (!compareModeActive) toggleCompareMode();
+  document.getElementById("compareGeneInput").value = rawText;
+  updateReferenceMapFromText();
+  renderTable();
+  showToast(`📊 "${name}" DNA loaded for comparison.`);
+}
+function deleteDnaProfile(index, name) {
+  if (confirm(`Delete "${name}"?`)) {
+    savedDna.splice(index, 1);
+    saveDnaToStorage();
+    showToast(`🗑️ "${name}" removed.`);
+  }
+}
+function renderSavedDnaList() {
+  const container = document.getElementById("savedDnaList");
+  if (savedDna.length === 0) {
+    container.innerHTML =
+      '<div class="empty-bookmarks">No saved DNA profiles.<br>Click "SAVE" to store.</div>';
+    return;
+  }
+  let html = "";
+  savedDna.forEach((item, idx) => {
+    html += `<div class="dna-item"><div class="dna-info" onclick="loadDnaProfile(\`${escapeHtml(
+      item.rawText
+    )}\`,'${escapeHtml(item.name)}')"><strong>💾 ${escapeHtml(
+      item.name
+    )}</strong></div><div style="display: flex; gap: 5px;"><button class="compare-load-btn" onclick="event.stopPropagation(); loadToCompare(\`${escapeHtml(
+      item.rawText
+    )}\`,'${escapeHtml(
+      item.name
+    )}')">⚖️</button><button class="delete-dna" onclick="event.stopPropagation(); deleteDnaProfile(${idx}, '${escapeHtml(
+      item.name
+    )}')">✖</button></div></div>`;
+  });
+  container.innerHTML = html;
+}
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, (m) =>
+    m === "&" ? "&amp;" : m === "<" ? "&lt;" : "&gt;"
+  );
+}
+window.loadDnaProfile = loadDnaProfile;
+window.loadToCompare = loadToCompare;
+window.deleteDnaProfile = deleteDnaProfile;
+
+async function pasteClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById("rawGeneInput").value = text;
+    parseAndLoadFromTextarea();
+    showToast("✅ Pasted from clipboard.");
+  } catch (e) {
+    showToast("Clipboard read failed", 1500);
+  }
+}
+function exportData() {
+  syncTextareaFromTable();
+  const txt = document.getElementById("rawGeneInput").value;
+  navigator.clipboard
+    .writeText(txt)
+    .then(() => showToast(`✅ Copied to clipboard`));
+}
+function clearRaw() {
+  document.getElementById("rawGeneInput").value = "";
+  parseAndLoadFromTextarea();
+  showToast("Raw DNA cleared.");
+}
+function clearCompare() {
+  document.getElementById("compareGeneInput").value = "";
+  if (compareModeActive) updateReferenceMapFromText();
+  renderTable();
+  showToast("Compare DNA cleared.");
+}
+
+function removeDiversity() {
+  let modifiedCount = 0;
+  for (let i = 0; i < currentGenePairs.length; i++) {
+    const gp = currentGenePairs[i];
+    if (gp.desc !== "CHEST_SMALL" && gp.m === 100) {
+      const domNuc = getDominantNuc(gp.allele1, gp.allele2, gp.priorityOrder);
+      if (gp.allele1 !== domNuc || gp.allele2 !== domNuc) {
+        gp.allele1 = domNuc;
+        gp.allele2 = domNuc;
+        modifiedCount++;
+      }
+    }
+  }
+  if (modifiedCount > 0) {
+    syncTextareaFromTable();
+    renderTable();
+    renderBookmarksList();
+  } else {
+  }
+}
+
+function randomDiversity() {
+  let modifiedCount = 0;
+  for (let i = 0; i < currentGenePairs.length; i++) {
+    const gp = currentGenePairs[i];
+    if (gp.desc !== "CHEST_SMALL" && gp.m === 100) {
+      const domNuc = getDominantNuc(gp.allele1, gp.allele2, gp.priorityOrder);
+      const domIndex = gp.priorityOrder.indexOf(domNuc);
+      const allowedBases = gp.priorityOrder.slice(domIndex);
+      const randomNuc =
+        allowedBases[Math.floor(Math.random() * allowedBases.length)];
+      if (gp.allele1 !== domNuc || gp.allele2 !== randomNuc) {
+        gp.allele1 = domNuc;
+        gp.allele2 = randomNuc;
+        modifiedCount++;
+      }
+    }
+  }
+  if (modifiedCount > 0) {
+    syncTextareaFromTable();
+    renderTable();
+    renderBookmarksList();
+  } else {
+  }
+}
+
+// Event listeners
+document
+  .getElementById("rawGeneInput")
+  .addEventListener("input", () => parseAndLoadFromTextarea());
+document.getElementById("pasteBtn").addEventListener("click", pasteClipboard);
+document.getElementById("exportBtn").addEventListener("click", exportData);
+document
+  .getElementById("toggleCompareBtn")
+  .addEventListener("click", toggleCompareMode);
+document
+  .getElementById("compareGeneInput")
+  .addEventListener("input", onCompareInput);
+document.getElementById("saveDnaBtn").addEventListener("click", saveCurrentDna);
+document.getElementById("clearRawBtn").addEventListener("click", clearRaw);
+document
+  .getElementById("clearCompareBtn")
+  .addEventListener("click", clearCompare);
+document
+  .getElementById("removeDiversityBtn")
+  .addEventListener("click", removeDiversity);
+document
+  .getElementById("randomDiversityBtn")
+  .addEventListener("click", randomDiversity);
+
+// Initialise
+document.getElementById("rawGeneInput").value = "";
+loadBookmarks();
+parseAndLoadFromTextarea();
+setupHelixNav();
+loadSavedDna();
+
+</script>
+</body>
+</html>
