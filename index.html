@@ -1124,6 +1124,31 @@ function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
 
+const syncChannel = new BroadcastChannel('crispr-sync');
+
+syncChannel.onmessage = (event) => {
+  if (event.data && event.data.type === 'update') {
+    categories = loadCategories();
+    if (selectedCategoryId && !categories.find(c => c.id === selectedCategoryId)) {
+      selectedCategoryId = null;
+    }
+    renderLibrary();
+    updateSaveButton();
+  }
+};
+
+function reloadCategoriesFromStorage() {
+  categories = loadCategories();
+  if (selectedCategoryId && !categories.find(c => c.id === selectedCategoryId)) {
+    selectedCategoryId = null;
+  }
+}
+
+function broadcastUpdate() {
+  saveCategories();
+  syncChannel.postMessage({ type: 'update' });
+}
+
 function loadCategories() {
   const raw = localStorage.getItem(STORAGE_KEY_LIBRARY);
   if (raw) {
@@ -1142,7 +1167,7 @@ function loadCategories() {
           defaultCat.entries.push({ id: generateId(), name: item.name || 'Unnamed', dnaText: item.rawText || '' });
         });
       }
-	  saveCategories();
+	  broadcastUpdate();
       localStorage.removeItem('horsey_saved_dna');
     } catch (e) {}
   }
@@ -1199,7 +1224,7 @@ function renderLibrary() {
       const newName = prompt('New category name:', cat.name);
       if (newName && newName.trim()) {
         cat.name = newName.trim();
-        saveCategories();
+        broadcastUpdate();
         renderLibrary();
         showToast(`Category renamed to "${cat.name}"`);
       }
@@ -1213,7 +1238,7 @@ function renderLibrary() {
       if (confirm(`Delete category "${cat.name}" and all its DNA?`)) {
         categories = categories.filter(c => c.id !== cat.id);
         if (selectedCategoryId === cat.id) selectedCategoryId = null;
-        saveCategories();
+        broadcastUpdate();
         renderLibrary();
         updateSaveButton();
         showToast(`Category "${cat.name}" deleted`, 'error');
@@ -1262,7 +1287,7 @@ function renderLibrary() {
           const newName = prompt('New name:', entry.name);
           if (newName && newName.trim()) {
             entry.name = newName.trim();
-            saveCategories();
+            broadcastUpdate();
             renderLibrary();
             showToast(`DNA renamed to "${entry.name}"`);
           }
@@ -1287,7 +1312,7 @@ function renderLibrary() {
           e.stopPropagation();
           if (confirm(`Delete DNA "${entry.name}"?`)) {
             cat.entries = cat.entries.filter(e => e.id !== entry.id);
-            saveCategories();
+            broadcastUpdate();
             renderLibrary();
             showToast(`DNA "${entry.name}" deleted`, 'error');
           }
@@ -1348,7 +1373,7 @@ function handleCategoryDrop(e) {
   if (draggedIndex !== -1 && targetIndex !== -1) {
     const [moved] = categories.splice(draggedIndex, 1);
     categories.splice(targetIndex, 0, moved);
-    saveCategories();
+    broadcastUpdate();
     renderLibrary();
   }
 }
@@ -1377,7 +1402,7 @@ function handleEntryDrop(e) {
   if (draggedIndex !== -1 && targetIndex !== -1 && draggedIndex !== targetIndex) {
     const [moved] = cat.entries.splice(draggedIndex, 1);
     cat.entries.splice(targetIndex, 0, moved);
-    saveCategories();
+    broadcastUpdate();
     renderLibrary();
   }
 }
@@ -1395,7 +1420,7 @@ function addCategory() {
   if (!name || !name.trim()) return;
   const newCat = { id: generateId(), name: name.trim(), entries: [] };
   categories.push(newCat);
-  saveCategories();
+  broadcastUpdate();
   renderLibrary();
   selectCategory(newCat.id);
   showToast(`Category "${newCat.name}" created`);
@@ -1412,7 +1437,7 @@ function saveCurrentDna() {
   const name = prompt('Name for this DNA snapshot:', `DNA ${new Date().toLocaleTimeString()}`);
   if (!name || !name.trim()) return;
   cat.entries.push({ id: generateId(), name: name.trim(), dnaText });
-  saveCategories();
+  broadcastUpdate();
   renderLibrary();
   showToast(`DNA "${name.trim()}" saved`);
 }
@@ -1449,7 +1474,7 @@ document.getElementById('importFileInput').addEventListener('change', function(e
         }));
         categories.push({ id: newCatId, name: cat.name, entries: newEntries });
       });
-      saveCategories();
+      broadcastUpdate();
       renderLibrary();
       showToast(`Imported ${imported.length} categories`);
     } catch (err) { showToast('Invalid import file', 'error'); }
