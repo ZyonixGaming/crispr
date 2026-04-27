@@ -1583,7 +1583,7 @@ function renderTable(){
   let filtered=currentGenePairs.filter(p=>p.desc.toLowerCase().includes(currentFilter.toLowerCase()));
   const hasCompare=compareModeActive;
   const thead=document.getElementById("dynamicThead");
-  thead.innerHTML=`<th style="width:45px;">⭐</th><th>Helix</th><th>Pair</th><th>m</th><th>Description <a href="https://horseygame.miraheze.org/wiki/Genome" target="_blank">(?)</a></th><th colspan="2">Pair 1</th><th colspan="2">Pair 2</th><th>Value</th>${hasCompare?"<th>Compare</th>":""}`;
+  thead.innerHTML=`<th style="width:45px;">⭐</th><th>Helix</th><th>Pair</th><th>m</th><th>Description <a href="https://horseygame.miraheze.org/wiki/Genome" target="_blank">(?)</a></th><th colspan="2">Pair 1</th><th colspan="2">Pair 2</th><th>Value <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3704208519" target="_blank">(?)</a></th>${hasCompare?"<th>Compare</th>":""}`;
   let html="";
   for(let idx=0;idx<filtered.length;idx++){
     const p=filtered[idx];
