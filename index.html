@@ -1564,7 +1564,7 @@ function updateDnaUrl() {
     const encoded = encodeSequences(lines);
     const newUrl = `${window.location.pathname}?dna=${encoded}`;
     history.replaceState(null, '', newUrl);
-    dnaShortenerLink.href = `https://horsey.mooo.com?dna=${encoded}`;
+    dnaShortenerLink.href = `https://zyonixgaming.github.io/dna/?dna=${encoded}`;
     dnaShortenerLink.classList.add('visible');
   } catch (e) {
     dnaShortenerLink.classList.remove('visible');
