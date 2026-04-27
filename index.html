@@ -1142,6 +1142,7 @@ function loadCategories() {
           defaultCat.entries.push({ id: generateId(), name: item.name || 'Unnamed', dnaText: item.rawText || '' });
         });
       }
+	  saveCategories();
       localStorage.removeItem('horsey_saved_dna');
     } catch (e) {}
   }
