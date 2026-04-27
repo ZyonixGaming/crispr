@@ -1118,13 +1118,13 @@ function decodeToLines(encodedStr) {
 }
 
 // ---- DNA Library (categories, entries, local storage) ----
-const STORAGE_KEY_LIBRARY = 'crispr_dna_library';
+const STORAGE_KEY_LIBRARY = 'dna_shortener_categories';
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
 
-const syncChannel = new BroadcastChannel('crispr-sync');
+const syncChannel = new BroadcastChannel('dna-shortener-sync');
 
 syncChannel.onmessage = (event) => {
   if (event.data && event.data.type === 'update') {
@@ -1449,7 +1449,7 @@ function exportLibrary() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'crispr_dna_library.json';
+  a.download = 'dna_library.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
