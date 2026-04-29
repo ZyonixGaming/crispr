@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>CRISPR 2.0</title>
+    <link rel="stylesheet" href="crispr.css">
+</head>
+<body>
+<div class="app-layout">
+  <!-- LEFT SIDEBAR -->
+  <div class="left-sidebar">
+    <div class="sidebar-header">
+      <h1>🧬 CRISPR 2.0</h1>
+    </div>
+
+    <div class="controls-section">
+      <div class="btn-group">
+        <button id="pasteBtn" class="primary">PASTE</button>
+        <button id="exportBtn" class="success">COPY</button>
+      </div>
+    </div>
+
+    <div class="textarea-section">
+      <label>✏️ GENE DATA (To edit)</label>
+      <div class="textarea-with-clear">
+        <textarea id="rawGeneInput" rows="20" placeholder='Example:
+0:ATATGGCTTC
+0:CTATGGACTC
+1:TATAGCAACCTCA
+1:TATAGCAACCTCA'></textarea>
+        <span class="textarea-actions">
+          <a id="dnaShortenerLink" href="#" target="_self">To DNA Shortener</a>
+          <button id="clearRawBtn" class="clear-btn clear-textarea-btn">✖ Clear</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- Compare Mode Toggle + compare textarea -->
+    <div class="controls-section textarea-section" style="border-top: 1px solid #2d3a46;">
+      <div class="btn-group">
+        <button id="toggleCompareBtn" class="compare-toggle">⚖️ COMPARE MODE (OFF)</button>
+      </div>
+      <div id="compareArea" style="display: none; margin-top: 12px;">
+        <label>📊 GENE DATA (To compare)</label>
+        <div class="textarea-with-clear">
+          <textarea id="compareGeneInput" rows="10" placeholder='Paste reference genes:
+0:ATATGGCTTC
+0:CTATGGACTC
+...'></textarea>
+          <button id="clearCompareBtn" class="clear-btn clear-textarea-btn">✖ Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REMOVE DIVERSITY BUTTON -->
+    <div class="controls-section" style="border-top: none; padding-top: 8px; padding-bottom: 16px">
+      <div class="btn-group" style="flex-direction: column; gap: 8px;">
+        <button id="removeDiversityBtn" class="diversity-remove" style="background: #8b5a2b; border-bottom-color: #d49b3a;">🧬 REMOVE DIVERSITY</button>
+        <button id="randomDiversityBtn" class="random-diversity" style="background: #2b6e4c; border-bottom-color: #67b886;">🎲 RANDOM DIVERSITY</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN TABLE AREA -->
+  <div class="main-content" id="mainContent">
+    <div class="filter-cell"><label>🔍 Search: </label><input type="text" id="filterInput" class="filter-input" placeholder="" value=""><button id="clearFilterBtn" class="clear-filter-btn">✖</button> </div>
+    <div class="table-wrapper">
+      <table class="gene-table" id="geneTable">
+        <thead id="dynamicThead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR: helix jump + bookmarks + DNA Library -->
+  <div class="right-sidebar">
+    <div class="helix-nav">
+      <h3>📑 GO TO HELIX (0–19)</h3>
+      <div class="helix-buttons" id="helixNavButtons"></div>
+    </div>
+
+    <div class="bookmarks-section">
+      <h3>⭐ BOOKMARKS <span style="font-size:0.65rem;"></span></h3>
+      <div id="bookmarksList" class="bookmarks-list">
+        <div class="empty-bookmarks">No bookmarks yet.<br>Click ★ a row to add.</div>
+      </div>
+    </div>
+
+    <!-- DNA Library -->
+    <div class="saved-dna-section">
+      <h3>📁 DNA Library</h3>
+      <div class="library-controls">
+        <button id="addCategoryBtn"><span>➕</span> Add Category</button>
+        <button id="saveDnaBtn"><span>💾</span> <span id="saveBtnText">Save DNA</span></button>
+      </div>
+      <ul class="category-list" id="categoryList"></ul>
+      <div class="import-export-btns">
+        <button id="exportLibBtn"><span>⬇️</span> Export</button>
+        <button id="importLibBtn"><span>⬆️</span> Import</button>
+      </div>
+    </div>
+    <!-- Hidden file input for import -->
+    <input type="file" id="importFileInput" accept=".json" style="display:none">
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="mapping.js"></script>
+<script src="crispr.js"></script>
+</body>
+</html>

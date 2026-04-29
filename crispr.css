@@ -1,0 +1,661 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", "Roboto", "Courier New", monospace;
+}
+body {
+    background: #1e2a2e;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    color: #e2e8f0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+.app-layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto;
+    background: #11181c;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.left-sidebar {
+    width: 250px;
+    background: #0f172a;
+    border-right: 2px solid #2d3a46;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+.sidebar-header,
+.controls-section,
+.textarea-section {
+    text-align: center;
+}
+.sidebar-header h1 {
+    font-size: 1.2rem;
+    margin: 8px 0 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.controls-section {
+    padding: 16px;
+    border-bottom: 1px solid #2d3a46;
+}
+.textarea-section {
+    padding: 16px;
+    border-bottom: 1px solid #2d3a46;
+}
+.textarea-section label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #9ca3af;
+    text-align: left;
+}
+.left-sidebar textarea {
+    background: #0f1720;
+    border: 1px solid #334155;
+    color: #cbd5e6;
+    border-radius: 16px;
+    padding: 10px 12px;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    resize: vertical;
+    width: 100%;
+    text-align: left;
+}
+.btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+button {
+    background: #2d3e44;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    font-family: monospace;
+    font-weight: 600;
+    flex: 1;
+    min-width: 80px;
+}
+button.primary {
+    background: #2c6e6e;
+    border-bottom: 2px solid #48b5b5;
+}
+button.success {
+    background: #2b6e4c;
+    border-bottom: 2px solid #67b886;
+}
+button.compare-toggle {
+    background: #4b3b6e;
+    border-bottom: 2px solid #8b6ed9;
+}
+button.compare-toggle.active {
+    background: #6b4e9e;
+    border-bottom-color: #c49eff;
+}
+button.small {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-width: auto;
+}
+button.icon-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-width: auto;
+    background: #4b5563;
+    border-bottom: none;
+}
+button.icon-btn:hover {
+    background: #6b7280;
+}
+button.clear-btn {
+    width: 80px;
+    max-width:80px;
+    background: #7f4a4a;
+    border-bottom: none;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-width: auto;
+}
+button.clear-btn:hover {
+    background: #9b5e5e;
+}
+.textarea-with-clear {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.textarea-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.textarea-actions a {
+    color: #add8e6;
+    font-size: 0.7rem;
+    text-decoration: none;
+    font-weight: bold;
+}
+.textarea-actions a:hover {
+    text-decoration: underline;
+}
+.clear-textarea-btn {
+    align-self: flex-end;
+    margin-top: 0;
+}
+.right-sidebar {
+    width: 280px;
+    background: #0f172a;
+    border-left: 2px solid #2d3a46;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+.helix-nav,
+.bookmarks-section,
+.saved-dna-section {
+    text-align: center;
+    padding: 16px;
+    border-bottom: 1px solid #2d3a46;
+}
+.helix-nav h3,
+.bookmarks-section h3,
+.saved-dna-section h3 {
+    font-size: 0.8rem;
+    margin: 0 0 12px 0;
+    color: #b9c7d9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+}
+.helix-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+.helix-btn {
+    background: #1e293b;
+    border: 1px solid #475569;
+    padding: 4px 4px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-family: monospace;
+    min-width: 30px;
+    max-width: 30px;
+}
+.helix-btn:hover {
+    background: #3b4e6b;
+}
+.bookmarks-list,
+.saved-dna-list {
+    max-height: 340px;
+    overflow-y: auto;
+    text-align: left;
+}
+.bookmark-item,
+.dna-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    margin: 4px 0;
+    background: #1e293b;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+.bookmark-item:hover,
+.dna-item:hover {
+    background: #2d3e44;
+}
+.bookmark-info,
+.dna-info {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.bookmark-info strong {
+    color: #facc15;
+}
+.bookmark-value-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    margin-left: 6px;
+}
+.remove-bookmark,
+.delete-dna,
+.compare-load-btn {
+    background: #7f4a4a;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    cursor: pointer;
+    margin-left: 8px;
+    flex: 0;
+    min-width: auto;
+}
+.compare-load-btn {
+    background: #4b3b6e;
+    border-bottom: 2px solid #8b6ed9;
+    font-weight: bold;
+}
+.compare-load-btn:hover {
+    background: #6b4e9e;
+    filter: brightness(1.05);
+}
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 8px 8px;
+    background: #11181c;
+    position: relative;
+    min-width: 0;
+}
+.table-wrapper {
+    background: #0f172a;
+    border-radius: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    width: 100%;
+}
+.gene-table {
+    width: auto;
+    min-width: 730px;
+    border-collapse: collapse;
+    font-size: 12px;
+    font-family: "Courier New", "Fira Code", monospace;
+    margin: 0 auto;
+}
+.gene-table thead tr:first-child th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+.gene-table th {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 10px 8px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+.filter-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+}
+.filter-input {
+    flex: 1;
+    background: #0f1720;
+    border: 1px solid #475569;
+    margin: 8px;
+    color: #e2e8f0;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    font-family: monospace;
+    text-align: center;
+    max-width: 300px;
+}
+.clear-filter-btn {
+    width: 36px;
+    max-width: 36px;
+    min-width: auto;
+    background: #7f4a4a;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+.clear-filter-btn:hover {
+    background: #9b5e5e;
+}
+.gene-table td {
+    padding: 8px 6px;
+    border-bottom: 1px solid #2d3a4a;
+    vertical-align: middle;
+    text-align: center;
+}
+.gene-table tr.helix-even {
+    background-color: #0f172a;
+    scroll-margin-top: 36px;
+}
+.gene-table tr.helix-odd {
+    background-color: #1a2533;
+    scroll-margin-top: 36px;
+}
+.bookmark-col {
+    width: 40px;
+    text-align: center;
+}
+.bookmark-star {
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.1s;
+    display: inline-block;
+}
+.bookmark-star.bookmarked {
+    color: #facc15;
+    text-shadow: 0 0 2px #ffd966;
+}
+.bookmark-star:not(.bookmarked) {
+    color: #4b5563;
+}
+.helix-col,
+.pair-col {
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+.desc-td {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #b9c7d9;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.desc-td:hover {
+    white-space: normal;
+    word-break: break-word;
+}
+select.nuc-select {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border-radius: 28px;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-align: left;
+    width: 100px;
+    transition: 0.1s;
+    border: 1px solid #4b5563;
+    background-color: #0a0f18;
+    color: white;
+}
+select.nuc-select.A-selected {
+    background-color: #facc15;
+    color: #1e1a0a;
+    border-color: #facc15;
+}
+select.nuc-select.C-selected {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+select.nuc-select.G-selected {
+    background-color: #22c55e;
+    color: #0a2f1a;
+    border-color: #22c55e;
+}
+select.nuc-select.T-selected {
+    background-color: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+.final-value-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+.helix-highlight {
+    background-color: #2c6e6e !important;
+    transition: background 0.1s;
+}
+.diff-highlight {
+    background-color: rgba(255, 140, 100, 0.25) !important;
+}
+.toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2c6e6e;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+    white-space: nowrap;
+}
+.toast.show {
+    opacity: 1;
+}
+.empty-bookmarks {
+    color: #7e8a98;
+    font-style: italic;
+    text-align: center;
+    padding: 12px;
+    font-size: 0.7rem;
+}
+button.diversity-remove {
+    background: #8b5a2b;
+    border-bottom: 2px solid #d49b3a;
+    transition: all 0.2s;
+}
+button.diversity-remove:hover {
+    background: #a06d36;
+    transform: scale(0.98);
+}
+button.random-diversity {
+    background: #2b6e4c;
+    border-bottom: 2px solid #67b886;
+}
+button.random-diversity:hover {
+    background: #348e5c;
+    transform: scale(0.98);
+}
+/* Style the dropdown options with nucleotide colors and thick border */
+select.nuc-select option {
+    background-color: #0a0f18;
+    color: white;
+    transition: all 0.1s ease;
+    border: 3px solid white !important;
+    border-radius: 8px;
+    margin: 2px;
+    padding: 4px 8px;
+}
+/* Override browser hover effect */
+select.nuc-select option:hover,
+select.nuc-select option:focus,
+select.nuc-select option:active {
+    filter: brightness(0.85);
+    border-color: #fff !important;
+    font-weight: bold;
+}
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+    color: #add8e6;
+    font-weight: bold;
+    text-decoration: none;
+}
+/* --- DNA Library styles (from DNA Shortener, adapted) --- */
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.category-item {
+    background: #0f172a;
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    transition: background 0.2s, border-color 0.2s;
+    border: 2px solid transparent;
+}
+.category-item.selected {
+    border-color: #3b82f6;
+    background: #1e2a3a;
+}
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+}
+.category-name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+.category-actions {
+    display: flex;
+    gap: 0.15rem;
+}
+.category-actions button {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0.1rem;
+    font-size: 0.65rem;
+    min-width: auto;
+}
+.category-actions button:hover { color: #f1f5f9; }
+.entry-list {
+    list-style: none;
+    padding-left: 0.8rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+.entry-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.3rem;
+    background: #1e293b;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+.entry-item:hover { background: #334155; }
+.entry-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+.entry-actions {
+    display: flex;
+    gap: 0.1rem;
+}
+.entry-actions button {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    padding: 0.1rem;
+    font-size: 0.6rem;
+    cursor: pointer;
+    min-width: auto;
+}
+.entry-actions button:hover { color: #f1f5f9; }
+.drag-handle {
+    cursor: grab;
+    color: #64748b;
+    font-size: 0.8rem;
+    user-select: none;
+}
+.drag-handle:active { cursor: grabbing; }
+.category-item.dragging, .entry-item.dragging { opacity: 0.4; }
+.library-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+.library-controls button {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+    flex: none;
+    width: 100%;
+}
+.import-export-btns {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+.import-export-btns button {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+    flex: 1;
+}
+/* Hidden by default (shown when link is valid) */
+#dnaShortenerLink {
+    display: none;
+    margin-right: auto;
+}
+#dnaShortenerLink.visible {
+    display: inline;
+}
