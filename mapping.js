@@ -204,7 +204,7 @@ const ORIGINAL_MAPPING = [
   [16, 15, "HOOF_COLOR"],
   [17, 1, "AGOUTI"],
   [17, 2, "FOOT_IS_HOOF"],
-  [17, 3, "RACCOON_EYE"],
+  [17, 3, "RACCOON_EYE"],            // renamed from COON_EYE
   [17, 4, "EAR_COMP"],
   [17, 5, "TAIL_ALT"],
   [17, 6, "PAT_SPLIT"],
@@ -242,61 +242,264 @@ const ORIGINAL_MAPPING = [
   [19, 16, "L_NECK_BTOF_EVENT"]
 ];
 
-// ========== FETCH gene value data from XML (same folder) ==========
-const XML_URL = 'genes.xml';   // relative path – same directory as index.html
+// ========== Classic hard‑coded fallback (full original values) ==========
+const CLASSIC_FALLBACK = [
+  [0,1,"BONES","GCAT",14,-14,0,0,95,100],
+  [0,2,"BONES2","TGCA",0,-16,16,0,60,100],
+  [0,3,"OSTODERM","GATC",0,2,1,1,100,1],
+  [0,4,"OSTO_SIZE","TACG",15,45,30,30,100,100],
+  [0,5,"GIANT_DWARF","GACT",66,133,100,100,100,100],
+  [0,6,"TAIL_BOTTOM","GTCA",0,0,0,1,100,1],
+  [0,7,"LEG_STRETCH2","ATCG",0,16,0,-16,100,100],
+  [0,8,"ARM_STRETCH2","TCAG",16,-16,0,0,100,100],
+  [0,9,"HEAD_THICK_SKULL","TGAC",0,0,20,0,100,100],
+  [0,10,"NECK_STIFF","CATG",1,0,1,0,100,1],
+  [1,1,"GUT","TGAC",45,0,25,0,100,100],
+  [1,2,"GUT_IS_UDDER","ACGT",0,1,0,2,100,1],
+  [1,3,"DERRIERE","CTGA",10,0,70,40,85,100],
+  [1,4,"LEG_IS_CIRCLE","ATGC",0,0,0,1,100,1],
+  [1,5,"FOOT_IS_CIRCLE","GACT",1,0,0,0,100,1],
+  [1,6,"TONGUE","CGAT",60,0,40,0,100,100],
+  [1,7,"TONGUE_SEGS","ACGT",0,1,2,0,100,1],
+  [1,8,"BELLY_ALT","TACG",1,2,1,0,100,1],
+  [1,9,"PAT_BELLY","ACTG",100,50,75,33,100,100],
+  [1,10,"LITTER_SIZE","CTAG",3,1,5,2,100,1],
+  [1,11,"OLD_AGE","TACG",0,-1,2,0,100,1],
+  [1,12,"OMNIVORE","CATG",1,0,0,0,100,1],
+  [1,13,"LIMP","AGTC",0,2,1,0,100,1],
+  [2,1,"MUSCLE_USE","CTAG",80,100,100,50,100,100],
+  [2,2,"TAIL_STIFF","ATGC",0,1,0,1,100,1],
+  [2,3,"LEG_FLEXIBILITY","GTCA",50,40,30,20,80,1],
+  [2,4,"LEG_FLEX_BIAS","CGAT",10,15,20,-10,100,1],
+  [2,5,"TAIL_FLEXIBILITY","GTAC",45,15,135,90,100,1],
+  [2,6,"TAIL_SPEED","GCAT",60,200,60,0,100,10],
+  [2,7,"LEG_AND_ARM_LIMP","TAGC",0,1,0,0,100,1],
+  [2,8,"ARM_STRENGTH","ATCG",95,80,104,120,60,100],
+  [2,9,"ARM_FLEXIBILITY","ACTG",30,20,30,40,100,1],
+  [2,10,"ARM_FLEX_BIAS","GCTA",0,20,15,10,100,1],
+  [2,11,"NECK_FLEXIBILITY","GTCA",0,40,23,10,100,1],
+  [2,12,"NECK_FLEX_BIAS","GATC",0,30,-8,-25,100,1],
+  [2,13,"BRAIN_SPASTIC","TGAC",2,0,1,0,100,1],
+  [3,1,"SPLAY","ACTG",0,10,45,-5,100,1],
+  [3,2,"LEG_IN","CGAT",6,0,18,0,50,100],
+  [3,3,"LEG_IN2","CGAT",0,0,13,1,100,100],
+  [3,4,"TAIL_ANGLE","GCAT",135,90,45,60,100,1],
+  [3,5,"TAIL_JOINT_TYPE","ATGC",0,0,0,1,100,1],
+  [3,6,"LEG_JOINT_TYPE","AGTC",0,0,1,2,100,1],
+  [3,7,"HAS_KNEE","TCGA",0,1,0,0,100,1],
+  [3,8,"KNEE_MIN","CGAT",-15,0,-90,0,100,1],
+  [3,9,"KNEE_MAX","TAGC",90,20,45,20,100,1],
+  [3,10,"ARM_JOINT_TYPE","GCTA",0,1,0,2,100,1],
+  [3,11,"HAS_ELBOW","CATG",1,0,0,0,100,1],
+  [3,12,"ELBOW_RANGE","CTAG",10,30,30,90,100,1],
+  [3,13,"NECK_JOINT_TYPE","TGCA",0,2,0,1,100,1],
+  [3,14,"HEAD_JOINTED","CATG",1,0,0,0,100,1],
+  [3,15,"STIFF_JOINTS","CGAT",50,0,18,0,100,100],
+  [4,1,"LEG_TAG","ATGC",1,3,4,2,100,1],
+  [4,2,"LEG_HAS_FOOT","GACT",1,0,1,0,100,1],
+  [4,3,"LEG_COUNT","CGTA",7,1,1,2,100,1],
+  [4,4,"LEG_THRUST_BACK","GCTA",2,1,0,0,100,1],
+  [4,5,"ARM_TAG","GTAC",4,3,1,2,100,1],
+  [4,6,"ARM_HAS_HAND","CGTA",0,1,0,1,100,1],
+  [4,7,"NECK_TAG","AGTC",4,2,3,1,100,1],
+  [4,8,"NECK_SLOUCH","CTGA",0,0,20,50,60,100],
+  [4,9,"NECK_ONTOP","GTCA",20,70,0,50,100,100],
+  [4,10,"BREAK_FORCE","GATC",50,30,0,0,100,10],
+  [4,11,"EAR_X","TAGC",100,0,50,0,90,100],
+  [5,1,"QUADRUPED","CGAT",1,1,0,0,100,1],
+  [5,2,"BIPED","TAGC",1,1,0,0,100,1],
+  [5,3,"UPARM_TAG","ATCG",0,1,4,2,100,1],
+  [5,4,"UPARM_Y","CTAG",30,30,50,10,80,100],
+  [5,5,"UPARM_GOOFY","ACGT",0,1,2,3,100,1],
+  [5,6,"ARM_FORWARD","CTGA",40,-20,60,0,100,1],
+  [5,7,"UPARM_ANGLE","GCAT",-30,30,0,-45,100,1],
+  [5,8,"WHITE_IS_LETHAL","AGCT",0,0,1,0,100,1],
+  [6,1,"SIZE","ATGC",100,75,35,50,95,100],
+  [6,2,"ASPECT","GCAT",150,310,200,250,95,100],
+  [6,3,"SKINNY","GACT",200,100,100,75,100,100],
+  [6,4,"CHEST_BIG","ATCG",104,108,102,102,100,100],
+  [6,5,"CHEST_SMALL","GCTA",95,100,95,90,100,100],
+  [6,6,"NECK_TYPE","TACG",1,2,0,1,100,1],
+  [6,7,"NECK_LENGTH","ATGC",60,30,90,70,90,100],
+  [6,8,"NECK_GIRAFFE","TCAG",85,0,120,110,90,100],
+  [6,9,"NECK_THICKNESS","CGTA",80,95,110,120,60,100],
+  [6,10,"NECK_ANGLE","TACG",30,60,75,45,90,1],
+  [6,11,"NECK_COCK","CGAT",20,0,30,-25,100,1],
+  [7,1,"TAIL_TAG","TAGC",4,1,2,3,100,1],
+  [7,2,"TAIL_EXISTS","GCAT",1,0,1,2,100,1],
+  [7,3,"TAIL_SIZE","GCAT",120,80,100,140,60,100],
+  [7,4,"TAIL_SHORT","CAGT",50,100,35,100,100,100],
+  [7,5,"TAIL_ASPECT","AGCT",20,30,10,20,90,100],
+  [7,6,"TAIL_SHAPE","AGTC",2,6,1,5,100,1],
+  [7,7,"TAIL_SEGMENTS","GTCA",5,3,3,0,100,1],
+  [7,8,"TAIL_WAG","CTGA",0,1,0,0,100,1],
+  [8,1,"LEG_TYPE","TACG",2,0,1,1,100,1],
+  [8,2,"LEG_LENGTH","CATG",50,80,100,120,90,100],
+  [8,3,"LEG_STRETCH","GACT",14,-14,0,0,60,100],
+  [8,4,"LEG_SKEW","TCGA",0,24,-16,0,60,100],
+  [8,5,"LEG_STRENGTH","GCTA",104,120,95,80,60,100],
+  [8,6,"LEG_PENCIL","ATGC",0,0,0,10,100,100],
+  [8,7,"ARM_TYPE","CGAT",0,1,2,0,100,1],
+  [8,8,"ARM_LENGTH","ATCG",80,120,25,50,90,100],
+  [8,9,"ARM_STRETCH","GACT",14,-14,0,0,60,100],
+  [8,10,"ARM_SKEW","TCGA",0,20,-20,0,100,100],
+  [8,11,"ARM_NODE_SCALE","CTGA",100,100,130,70,50,100],
+  [9,1,"HAS_FOOT","TACG",0,1,0,1,100,1],
+  [9,2,"FOOT_SIZE","GTAC",12,30,0,20,60,100],
+  [9,3,"FOOT_CLOWN","GTAC",0,0,0,30,100,100],
+  [9,4,"FOOT_THICKNESS","TCAG",30,15,7,20,80,100],
+  [9,5,"FOOT_TOE","AGCT",100,50,0,100,100,100],
+  [9,6,"FOOT_BACKWARDS","AGCT",0,0,1,2,100,1],
+  [9,7,"HAS_HAND","CGTA",1,0,1,0,100,1],
+  [9,8,"HAND_WIDTH","GACT",7,20,0,0,100,100],
+  [9,9,"HAND_LENGTH","CGAT",15,20,30,20,90,100],
+  [9,10,"HAND_FINGER","CTGA",50,0,0,100,80,100],
+  [9,11,"SKIN_HANDS","GCAT",0,1,0,2,100,1],
+  [10,1,"HEAD_SIZE","GCTA",75,50,100,133,95,100],
+  [10,2,"HEAD_X_GROWTH","ACGT",0,5,10,-5,100,100],
+  [10,3,"HEAD_Y_GROWTH","TACG",5,-5,0,0,100,100],
+  [10,4,"HEAD_ASPECT","TCAG",250,175,300,200,85,100],
+  [10,5,"HEAD_SQUARE","CTAG",100,0,0,150,100,100],
+  [10,6,"HEAD_HAS_BACK","GTCA",1,0,11,0,100,1],
+  [10,7,"HEAD_GIANT","CTAG",180,100,100,200,90,100],
+  [10,8,"HEAD_SHRUNK","CATG",70,100,100,50,90,100],
+  [10,9,"HEAD_CHIMERA","ATCG",0,0,0,1,100,1],
+  [10,10,"EYEBOX_X","AGCT",33,50,0,15,90,100],
+  [10,11,"EYEBOX_Y","CGTA",-25,-100,0,-50,100,100],
+  [10,12,"EYEBOX_SIZE","ATGC",25,50,33,15,60,100],
+  [10,13,"SKIN_HEAD","GCAT",0,1,0,2,100,1],
+  [11,1,"EYE_STYLE","CATG",2,1,0,1,100,1],
+  [11,2,"BUGEYE","GACT",1,0,0,2,100,1],
+  [11,3,"EYE_SIZE","ACTG",50,75,50,125,100,100],
+  [11,4,"PUPIL_SIZE","CAGT",80,66,40,40,100,100],
+  [11,5,"HAS_PUPIL","ATCG",1,0,0,0,100,1],
+  [11,6,"BROW_SIZE","GATC",150,0,0,125,100,100],
+  [11,7,"BROW_SLANT","GTAC",15,0,0,-15,100,1],
+  [11,8,"EYE_HUE","GCTA",198,237,36,153,100,1],
+  [11,9,"EAR_STYLE","TGCA",0,0,2,1,100,1],
+  [11,10,"EAR_SHAPE","CGAT",4,2,1,2,100,1],
+  [11,11,"EAR_SIZE","TCGA",40,30,10,20,70,100],
+  [11,12,"EAR_ASPECT","ATCG",100,300,100,250,100,100],
+  [11,13,"EAR_SLANT","GACT",100,50,0,-33,70,100],
+  [11,14,"EAR_INTERIOR","TAGC",0,0,0,5,100,100],
+  [11,15,"EAR_FLOP","CTAG",60,0,200,30,100,1],
+  [12,1,"TEETH_SHAPE","TCGA",3,1,2,0,100,1],
+  [12,2,"HAS_MOUTH","TCGA",1,1,0,1,100,1],
+  [12,3,"MOUTH_Y","CGAT",50,70,84,100,80,100],
+  [12,4,"MOUTH_SIZE","CTGA",40,20,10,30,70,100],
+  [12,5,"JAW","CAGT",15,0,-8,-13,50,100],
+  [12,6,"TEETH_UPPER","GATC",0,0,1,0,100,1],
+  [12,7,"TEETH_UPPER2","CATG",0,1,0,0,100,1],
+  [12,8,"NOSE_STYLE","GTCA",0,3,1,2,100,1],
+  [12,9,"NOSE_INNY","GCTA",0,1,0,0,100,1],
+  [12,10,"NOSE_Y","CTAG",50,0,0,100,90,100],
+  [12,11,"NOSE_SIZE","AGCT",10,20,5,100,70,100],
+  [12,12,"NOSE_INTERIOR","ATGC",0,0,50,100,100,100],
+  [12,13,"FLU_IMMUNITY","CATG",0,0,1,0,100,1],
+  [13,1,"HAS_ANTLERS","CTGA",1,1,1,0,100,1],
+  [13,2,"ANTLER_X","TGAC",2,1,0,1,100,1],
+  [13,3,"ANTLER_W","TACG",12,8,12,15,100,100],
+  [13,4,"ANTLER_H","TACG",45,100,25,65,80,100],
+  [13,5,"ANTLER_TAPER","CGAT",50,0,100,100,100,100],
+  [13,6,"ANTLER_POM","CTGA",100,0,200,150,100,100],
+  [13,7,"ANTLER_COLOR","ACGT",2,8,1,3,100,1],
+  [13,8,"POM_COLOR","GCTA",17,0,2,1,100,1],
+  [13,9,"POM_USECOLOR","GTAC",0,0,1,0,100,1],
+  [13,10,"HAT_POM","TGAC",50,0,25,0,100,100],
+  [13,11,"HAT_POM_IS_LID","TAGC",1,0,0,0,100,1],
+  [14,1,"ANTLER_REC","TAGC",1,0,3,2,100,1],
+  [14,2,"ANTLER_REC2","CTGA",0,2,3,1,100,1],
+  [14,3,"ANTLER_FLIP","TACG",0,0,0,1,100,1],
+  [14,4,"ANTLER_MOD","TCAG",1,2,3,3,100,1],
+  [14,5,"ANTLER_SCALEH","GCTA",100,75,100,40,80,100],
+  [14,6,"ANTLER_SCALEW","TCGA",100,75,50,100,100,100],
+  [14,7,"ANTLER_ANGLE","GATC",-45,25,45,-25,100,1],
+  [14,8,"ANTLER_ANGLE2","ACTG",45,-45,-90,90,100,1],
+  [14,9,"ANTLER_ANGLE_RAND","GTAC",45,15,0,5,100,1],
+  [14,10,"ANTLER_T1","CGAT",40,0,100,25,100,100],
+  [14,11,"ANTLER_T2","ATGC",100,25,0,40,100,100],
+  [15,1,"HAT_EXISTS","ACTG",1,0,0,0,100,1],
+  [15,2,"HAT_SIZE","CATG",40,60,20,100,85,100],
+  [15,3,"HAT_RAKE","AGTC",0,0,25,-15,100,100],
+  [15,4,"HAT_ASPECT","ATGC",100,100,200,300,85,100],
+  [15,5,"HAT_TAPER","TGCA",0,50,100,0,100,100],
+  [15,6,"HAT_CLONE","CGTA",0,0,33,66,100,100],
+  [15,7,"HAT_BACK_SCALE","TAGC",0,100,60,100,100,100],
+  [15,8,"HAT_FRONT_SCALE","CGTA",100,100,0,60,100,100],
+  [15,9,"HAT_BACK_ANGLE","ACGT",45,90,120,60,75,1],
+  [15,10,"HAT_FRONT_ANGLE","CGAT",-120,-45,-90,-60,100,1],
+  [15,11,"HAT_ANGLE_RAND","TCGA",15,15,45,0,100,1],
+  [15,12,"HAT_FLIP","TACG",1,0,0,0,100,1],
+  [15,13,"HAT_T","GTAC",40,0,0,100,100,100],
+  [16,1,"BASE_BROWN","ATCG",0,2,0,1,100,1],
+  [16,2,"BASE_BLACK","TGCA",1,0,1,0,100,1],
+  [16,3,"BASE_RED","GTCA",3,2,0,1,100,1],
+  [16,4,"BASE_GREEN","TCAG",2,1,3,0,70,1],
+  [16,5,"GREEN_KNOCKOUT","CAGT",1,0,0,0,100,1],
+  [16,6,"BASE_CREAM","AGCT",0,0,100,0,50,100],
+  [16,7,"ALT_BLUE","TAGC",1,3,2,0,100,1],
+  [16,8,"SPOT_YELLOW","TGCA",1,0,1,0,100,1],
+  [16,9,"SKIN_HUE","CGAT",2,0,1,3,100,1],
+  [16,10,"SKIN_HUE2","TAGC",1,3,2,0,100,1],
+  [16,11,"SWAP_BASE_SPOT","ATCG",0,0,1,1,100,1],
+  [16,12,"SWAP_ALT_SPOT","TGCA",1,0,1,0,100,1],
+  [16,13,"WHITE","TAGC",0,0,0,1,100,1],
+  [16,14,"NOSE_HUE","GACT",1,2,0,3,100,1],
+  [16,15,"HOOF_COLOR","CTAG",2,0,0,1,100,1],
+  [17,1,"AGOUTI","ATGC",1,1,0,0,100,1],
+  [17,2,"FOOT_IS_HOOF","GACT",1,0,0,1,100,1],
+  [17,3,"RACCOON_EYE","GCAT",2,1,0,0,100,1],       // was COON_EYE
+  [17,4,"EAR_COMP","GTCA",1,2,0,0,100,1],
+  [17,5,"TAIL_ALT","CGTA",0,0,1,2,100,1],
+  [17,6,"PAT_SPLIT","CGAT",65,0,100,0,100,100],
+  [17,7,"PAT_STRIPE","CTAG",51,0,0,90,100,100],
+  [17,8,"PAT_SPOT","ACGT",0,90,51,0,100,100],
+  [17,9,"PAT_PERLIN","TCAG",60,100,0,0,100,100],
+  [17,10,"PAT_PERLIN2","GTCA",0,60,0,100,100,100],
+  [17,11,"PAT_PERLIN_SIZE","GACT",2,4,8,4,100,1],
+  [18,1,"NARCOLEPSY","TCGA",0,0,1,0,100,1],
+  [18,2,"SPEED_FACTOR","GCAT",50,30,100,133,75,100],
+  [18,3,"NECK_SPEED","AGCT",60,50,25,10,100,10],
+  [18,4,"RAMPAGE","GATC",0,1,0,0,100,1],
+  [18,5,"SPINAL_LOCO","CTGA",2,0,0,1,100,1],
+  [18,6,"HIGH_INTELLECT","CTAG",0,0,1,1,100,1],
+  [18,7,"L_LEG_SIGNAL","GTCA",2,1,1,1,100,1],
+  [18,8,"L_ARM_SIGNAL","CGAT",2,2,2,1,100,1],
+  [18,9,"L_TAIL_SIGNAL","ACTG",3,1,4,2,100,1],
+  [18,10,"L_NECK_SIGNAL","TGAC",2,3,1,4,100,1],
+  [18,11,"LOCO_SYNC","CTGA",0,0,0,1,100,1],
+  [19,1,"L_LEG_FTOB_REACT","TCAG",1,2,3,1,100,1],
+  [19,2,"L_LEG_FTOB_EVENT","GATC",1,4,3,2,100,1],
+  [19,3,"L_LEG_BTOF_REACT","ACGT",2,1,2,3,100,1],
+  [19,4,"L_LEG_BTOF_EVENT","TGAC",1,4,3,2,100,1],
+  [19,5,"L_ARM_FTOB_REACT","ACGT",2,1,2,3,100,1],
+  [19,6,"L_ARM_FTOB_EVENT","TGAC",2,4,1,3,100,1],
+  [19,7,"L_ARM_BTOF_REACT","GATC",2,3,1,1,100,1],
+  [19,8,"L_ARM_BTOF_EVENT","CATG",3,2,4,1,100,1],
+  [19,9,"L_TAIL_FTOB_REACT","CGAT",3,0,1,2,100,1],
+  [19,10,"L_TAIL_FTOB_EVENT","TCGA",4,2,3,1,100,1],
+  [19,11,"L_TAIL_BTOF_REACT","GTCA",2,3,0,1,100,1],
+  [19,12,"L_TAIL_BTOF_EVENT","ATCG",2,3,4,1,100,1],
+  [19,13,"L_NECK_FTOB_REACT","GTAC",4,2,0,1,100,1],
+  [19,14,"L_NECK_FTOB_EVENT","CATG",2,1,4,3,100,1],
+  [19,15,"L_NECK_BTOF_REACT","TCAG",4,1,2,0,100,1],
+  [19,16,"L_NECK_BTOF_EVENT","TCAG",3,1,4,2,100,1]
+];
 
+// ========== Build completeMapping from a data source ==========
 let completeMapping = new Map();
 let allEntries = [];
 
-async function loadGeneDataFromXml() {
-  const response = await fetch(XML_URL);
-  if (!response.ok) throw new Error(`Failed to fetch genes.xml: ${response.status}`);
-  const xmlText = await response.text();
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
-
-  // Build a map from gene name → { priority, g0, g1, g2, g3, m, s }
-  const xmlDataMap = new Map();
-  xmlDoc.querySelectorAll('gene').forEach(gene => {
-    const name = gene.getAttribute('name');
-    if (!name) return;
-    xmlDataMap.set(name, {
-      priority: gene.getAttribute('priority') || 'TGCA',
-      g0: parseInt(gene.getAttribute('g0'), 10) || 0,
-      g1: parseInt(gene.getAttribute('g1'), 10) || 0,
-      g2: parseInt(gene.getAttribute('g2'), 10) || 0,
-      g3: parseInt(gene.getAttribute('g3'), 10) || 0,
-      m: parseInt(gene.getAttribute('m'), 10) || 100,
-      s: parseInt(gene.getAttribute('s'), 10) || 1
-    });
-  });
-
-  // Fill completeMapping using the fixed structure from ORIGINAL_MAPPING
+function buildMappingFromArray(srcArray) {
+  // srcArray: each row [helix, pair1based, desc, priority, a, c, g, t, m, s]
   completeMapping.clear();
-  for (const row of ORIGINAL_MAPPING) {
+  for (const row of srcArray) {
     const helix = row[0];
-    const pair1Based = row[1];            // 1‑based
-    const zeroBasedPair = pair1Based - 1;
+    const zeroBasedPair = row[1] - 1;
     const desc = row[2];
-
-    const xmlData = xmlDataMap.get(desc);
-    if (!xmlData) {
-      console.warn(`XML data missing for gene "${desc}"`);
-      continue;
-    }
-
-    const priorityStr = xmlData.priority;
+    const priorityStr = row[3];
     const priorityOrder = priorityStr.split('');
-    const gValues = [xmlData.g0, xmlData.g1, xmlData.g2, xmlData.g3];
-    const values = {};
-    for (let i = 0; i < 4; i++) {
-      const nuc = priorityOrder[i];
-      values[nuc] = gValues[i];
-    }
-    ['A','C','G','T'].forEach(nuc => {
-      if (values[nuc] === undefined) values[nuc] = 0;
-    });
-
+    const values = { A: row[4], C: row[5], G: row[6], T: row[7] };
     completeMapping.set(`${helix}:${zeroBasedPair}`, {
       helix,
       pair: zeroBasedPair,
@@ -304,16 +507,83 @@ async function loadGeneDataFromXml() {
       priorityStr,
       priorityOrder,
       values,
-      m: xmlData.m,
-      s: xmlData.s
+      m: row[8],
+      s: row[9]
     });
   }
+  allEntries = Array.from(completeMapping.values()).sort((a,b)=>a.helix-b.helix||a.pair-b.pair);
+  window.completeMapping = completeMapping;
+  window.allEntries = allEntries;
+}
 
-  allEntries = Array.from(completeMapping.values()).sort(
-    (a, b) => a.helix - b.helix || a.pair - b.pair
-  );
+// ========== Try XML, fallback to classic ==========
+const XML_URL = 'genes.xml';
 
-  // Make them globally accessible (window.*) for backwards compatibility
+async function loadGeneDataFromXml() {
+  try {
+    const response = await fetch(XML_URL);
+    if (!response.ok) throw new Error(`Status ${response.status}`);
+    const xmlText = await response.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
+
+    const xmlDataMap = new Map();
+    xmlDoc.querySelectorAll('gene').forEach(gene => {
+      const name = gene.getAttribute('name');
+      if (!name) return;
+      xmlDataMap.set(name, {
+        priority: gene.getAttribute('priority') || 'TGCA',
+        g0: parseInt(gene.getAttribute('g0'),10)||0,
+        g1: parseInt(gene.getAttribute('g1'),10)||0,
+        g2: parseInt(gene.getAttribute('g2'),10)||0,
+        g3: parseInt(gene.getAttribute('g3'),10)||0,
+        m: parseInt(gene.getAttribute('m'),10)||100,
+        s: parseInt(gene.getAttribute('s'),10)||1
+      });
+    });
+
+    // alias for renamed gene
+    if (xmlDataMap.has('COON_EYE')) {
+      xmlDataMap.set('RACCOON_EYE', xmlDataMap.get('COON_EYE'));
+    }
+
+    // Build from ORIGINAL_MAPPING + xmlData
+    completeMapping.clear();
+    for (const row of ORIGINAL_MAPPING) {
+      const helix = row[0];
+      const zeroBasedPair = row[1] - 1;
+      const desc = row[2];
+
+      const xmlData = xmlDataMap.get(desc);
+      if (!xmlData) continue;
+
+      const priorityStr = xmlData.priority;
+      const priorityOrder = priorityStr.split('');
+      const gValues = [xmlData.g0, xmlData.g1, xmlData.g2, xmlData.g3];
+      const values = {};
+      for (let i = 0; i < 4; i++) {
+        const nuc = priorityOrder[i];
+        values[nuc] = gValues[i];
+      }
+      ['A','C','G','T'].forEach(nuc => { if (values[nuc]===undefined) values[nuc]=0; });
+
+      completeMapping.set(`${helix}:${zeroBasedPair}`, {
+        helix,
+        pair: zeroBasedPair,
+        desc,
+        priorityStr,
+        priorityOrder,
+        values,
+        m: xmlData.m,
+        s: xmlData.s
+      });
+    }
+    allEntries = Array.from(completeMapping.values()).sort((a,b)=>a.helix-b.helix||a.pair-b.pair);
+  } catch (e) {
+    console.warn('XML load failed, using classic fallback', e);
+    buildMappingFromArray(CLASSIC_FALLBACK);
+  }
+  // Always expose globals
   window.completeMapping = completeMapping;
   window.allEntries = allEntries;
 }

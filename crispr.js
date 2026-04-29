@@ -714,7 +714,7 @@ function loadFromUrl() {
 }
 
 document.getElementById("rawGeneInput").value = "";
-loadFromUrl();
+
 // ========== Initialisation after XML is loaded ==========
 window.addEventListener('load', async () => {
   try {
@@ -722,7 +722,7 @@ window.addEventListener('load', async () => {
   } catch (err) {
     showToast('Failed to load gene data from XML', 'error');
     console.error(err);
-    return;
+    //return;
   }
 
   // Default category handling
@@ -743,5 +743,5 @@ window.addEventListener('load', async () => {
   }
 
   // Load DNA from URL parameter (if any)
-  
+  loadFromUrl();
 });
