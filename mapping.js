@@ -532,7 +532,7 @@ async function loadGeneDataFromXml() {
       const name = gene.getAttribute('name');
       if (!name) return;
       xmlDataMap.set(name, {
-        priority: gene.getAttribute('priority') || 'TGCA',
+        priority: gene.getAttribute('n') || 'TGCA',
         g0: parseInt(gene.getAttribute('g0'),10)||0,
         g1: parseInt(gene.getAttribute('g1'),10)||0,
         g2: parseInt(gene.getAttribute('g2'),10)||0,
