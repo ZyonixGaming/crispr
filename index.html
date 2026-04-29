@@ -1718,8 +1718,30 @@ function pasteClipboard(){navigator.clipboard.readText().then(text=>{document.ge
 function exportData(){syncTextareaFromTable();const txt=document.getElementById("rawGeneInput").value;navigator.clipboard.writeText(txt).then(()=>showToast(`✅ Copied to clipboard`));}
 function clearRaw(){document.getElementById("rawGeneInput").value="";parseAndLoadFromTextarea();showToast("Raw DNA cleared.");}
 function clearCompare(){document.getElementById("compareGeneInput").value="";if(compareModeActive)updateReferenceMapFromText();renderTable();showToast("Compare DNA cleared.");}
-function removeDiversity(){let modified=0;currentGenePairs.forEach(gp=>{if(gp.desc!=="CHEST_SMALL"&&gp.m===100){const dom=getDominantNuc(gp.allele1,gp.allele2,gp.priorityOrder);if(gp.allele1!==dom||gp.allele2!==dom){gp.allele1=dom;gp.allele2=dom;modified++;}}});if(modified){syncTextareaFromTable();renderTable();renderBookmarksList();}}
-function randomDiversity(){let modified=0;currentGenePairs.forEach(gp=>{if(gp.desc!=="CHEST_SMALL"&&gp.m===100){const dom=getDominantNuc(gp.allele1,gp.allele2,gp.priorityOrder);const domIdx=gp.priorityOrder.indexOf(dom);const allowed=gp.priorityOrder.slice(domIdx);const rand=allowed[Math.floor(Math.random()*allowed.length)];if(gp.allele1!==dom||gp.allele2!==rand){gp.allele1=dom;gp.allele2=rand;modified++;}}});if(modified){syncTextareaFromTable();renderTable();renderBookmarksList();}}
+function removeDiversity(){
+	let modified=0;
+	currentGenePairs.forEach(gp=>{
+		if(gp.desc!=="CHEST_SMALL"&&gp.desc!=="OSTO_SIZE"){
+			if(gp.m===100){
+				const dom=getDominantNuc(gp.allele1,gp.allele2,gp.priorityOrder);
+				if(gp.allele1!==dom||gp.allele2!==dom){
+					gp.allele1=dom;gp.allele2=dom;modified++;
+				}
+			}else if(gp.allele1!==gp.allele2&&gp.values[gp.allele1]==gp.values[gp.allele2]){
+				const dom=getDominantNuc(gp.allele1,gp.allele2,gp.priorityOrder);
+				gp.allele1=dom;gp.allele2=dom;modified++;
+						
+			}
+		}
+	});
+	
+	if(modified){
+		syncTextareaFromTable();
+		renderTable();
+		renderBookmarksList();
+	}
+}
+function randomDiversity(){let modified=0;currentGenePairs.forEach(gp=>{if(gp.desc!=="CHEST_SMALL"&&gp.desc!=="OSTO_SIZE"&&gp.m===100){const dom=getDominantNuc(gp.allele1,gp.allele2,gp.priorityOrder);const domIdx=gp.priorityOrder.indexOf(dom);const allowed=gp.priorityOrder.slice(domIdx);const rand=allowed[Math.floor(Math.random()*allowed.length)];if(gp.allele1!==dom||gp.allele2!==rand){gp.allele1=dom;gp.allele2=rand;modified++;}}});if(modified){syncTextareaFromTable();renderTable();renderBookmarksList();}}
 
 // Event listeners
 document.getElementById("rawGeneInput").addEventListener("input",()=>parseAndLoadFromTextarea());
