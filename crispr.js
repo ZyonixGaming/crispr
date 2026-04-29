@@ -714,7 +714,7 @@ function loadFromUrl() {
 }
 
 document.getElementById("rawGeneInput").value = "";
-
+loadFromUrl();
 // ========== Initialisation after XML is loaded ==========
 window.addEventListener('load', async () => {
   try {
@@ -743,5 +743,5 @@ window.addEventListener('load', async () => {
   }
 
   // Load DNA from URL parameter (if any)
-  loadFromUrl();
+  
 });
