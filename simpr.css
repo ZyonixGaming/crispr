@@ -142,3 +142,7 @@
 .bookmark-item .selected-option .value-part {
     font-size: 0.8rem;
 }
+
+button[title="Load into compare"] {
+    display: none !important;
+}
