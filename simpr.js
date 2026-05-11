@@ -140,7 +140,7 @@ window.renderTable = function () {
             </td>
             <td class="helix-col">${gp.helix}</td>
             <td class="pair-col">${gp.pair}</td>
-            <td class="desc-td" title="${gp.desc}">${gp.desc}</td>
+            <td class="desc-td" title="${gp.title}">${gp.desc}</td>
             <td>${dropdownHtml}</td>
         </tr>`;
     }
@@ -193,7 +193,7 @@ window.renderBookmarksList = function () {
         dropdownHtml += `</div></div>`;
 
         html += `<div class="bookmark-item">
-            <div class="bookmark-info"
+            <div class="bookmark-info" title="${entry.title}"
                  onclick="scrollToPair(${h},${p})" style="cursor:pointer; flex:1;">
                 <strong>H${h}P${p}:</strong> ${entry.desc}
             </div>
@@ -298,5 +298,22 @@ window.scrollToPair = function (h, p) {
         row.scrollIntoView({ behavior: 'instant', block: 'start' });
         row.classList.add('helix-highlight');
         setTimeout(() => row.classList.remove('helix-highlight'), 1000);
+    }
+};
+
+const _originalLoadBookmarks = loadBookmarks;
+loadBookmarks = function () {
+    _originalLoadBookmarks();
+    if (bookmarks.size === 0) {
+        // Bookmark keys: "helix:pair" with zero‑based pair index
+        const defaults = [
+            '1:9',   // LITTER_SIZE
+            '1:10',  // OLD_AGE
+            '1:11',  // OMNIVORE
+            '12:0',  // TEETH_SHAPE
+            '12:1'   // HAS_MOUTH
+        ];
+        defaults.forEach(key => bookmarks.add(key));
+        saveBookmarks();          // saves to localStorage & refreshes the bookmark list
     }
 };

@@ -244,9 +244,9 @@ const ORIGINAL_MAPPING = [
 
 // ========== Classic hard‑coded fallback (full original values) ==========
 const CLASSIC_FALLBACK = [
-  [0,1,"BONES","GCAT",14,-14,0,0,95,100],
-  [0,2,"BONES2","TGCA",0,-16,16,0,60,100],
-  [0,3,"OSTODERM","GATC",0,2,1,1,100,1],
+  [0,1,"BONES","GCAT",14,-14,0,0,95,100,"Scales the torso, neck, and head."],
+  [0,2,"BONES2","TGCA",0,-16,16,0,60,100,"Scales the torso, neck, and head."],
+  [0,3,"OSTODERM","GATC",0,2,1,1,100,1,"Spikes"],
   [0,4,"OSTO_SIZE","TACG",15,45,30,30,100,100],
   [0,5,"GIANT_DWARF","GACT",66,133,100,100,100,100],
   [0,6,"TAIL_BOTTOM","GTCA",0,0,0,1,100,1],
@@ -254,16 +254,16 @@ const CLASSIC_FALLBACK = [
   [0,8,"ARM_STRETCH2","TCAG",16,-16,0,0,100,100],
   [0,9,"HEAD_THICK_SKULL","TGAC",0,0,20,0,100,100],
   [0,10,"NECK_STIFF","CATG",1,0,1,0,100,1],
-  [1,1,"GUT","TGAC",45,0,25,0,100,100],
+  [1,1,"GUT","TGAC",45,0,25,0,100,100,"Tummy"],
   [1,2,"GUT_IS_UDDER","ACGT",0,1,0,2,100,1],
-  [1,3,"DERRIERE","CTGA",10,0,70,40,85,100],
-  [1,4,"LEG_IS_CIRCLE","ATGC",0,0,0,1,100,1],
+  [1,3,"DERRIERE","CTGA",10,0,70,40,85,100,"Rounded butt."],
+  [1,4,"LEG_IS_CIRCLE","ATGC",0,0,0,1,100,1,"Leg is wheel."],
   [1,5,"FOOT_IS_CIRCLE","GACT",1,0,0,0,100,1],
   [1,6,"TONGUE","CGAT",60,0,40,0,100,100],
   [1,7,"TONGUE_SEGS","ACGT",0,1,2,0,100,1],
   [1,8,"BELLY_ALT","TACG",1,2,1,0,100,1],
   [1,9,"PAT_BELLY","ACTG",100,50,75,33,100,100],
-  [1,10,"LITTER_SIZE","CTAG",3,1,5,2,100,1],
+  [1,10,"LITTER_SIZE","CTAG",3,1,5,2,100,1,"Number of kids."],
   [1,11,"OLD_AGE","TACG",0,-1,2,0,100,1],
   [1,12,"OMNIVORE","CATG",1,0,0,0,100,1],
   [1,13,"LIMP","AGTC",0,2,1,0,100,1],
@@ -273,14 +273,14 @@ const CLASSIC_FALLBACK = [
   [2,4,"LEG_FLEX_BIAS","CGAT",10,15,20,-10,100,1],
   [2,5,"TAIL_FLEXIBILITY","GTAC",45,15,135,90,100,1],
   [2,6,"TAIL_SPEED","GCAT",60,200,60,0,100,10],
-  [2,7,"LEG_AND_ARM_LIMP","TAGC",0,1,0,0,100,1],
+  [2,7,"LEG_AND_ARM_LIMP","TAGC",0,1,0,0,100,1,"Makes arms and legs unable to move on their own."],
   [2,8,"ARM_STRENGTH","ATCG",95,80,104,120,60,100],
   [2,9,"ARM_FLEXIBILITY","ACTG",30,20,30,40,100,1],
   [2,10,"ARM_FLEX_BIAS","GCTA",0,20,15,10,100,1],
   [2,11,"NECK_FLEXIBILITY","GTCA",0,40,23,10,100,1],
   [2,12,"NECK_FLEX_BIAS","GATC",0,30,-8,-25,100,1],
   [2,13,"BRAIN_SPASTIC","TGAC",2,0,1,0,100,1],
-  [3,1,"SPLAY","ACTG",0,10,45,-5,100,1],
+  [3,1,"SPLAY","ACTG",0,10,45,-5,100,1,"How much legs angle outwards."],
   [3,2,"LEG_IN","CGAT",6,0,18,0,50,100],
   [3,3,"LEG_IN2","CGAT",0,0,13,1,100,100],
   [3,4,"TAIL_ANGLE","GCAT",135,90,45,60,100,1],
@@ -306,15 +306,15 @@ const CLASSIC_FALLBACK = [
   [4,9,"NECK_ONTOP","GTCA",20,70,0,50,100,100],
   [4,10,"BREAK_FORCE","GATC",50,30,0,0,100,10],
   [4,11,"EAR_X","TAGC",100,0,50,0,90,100],
-  [5,1,"QUADRUPED","CGAT",1,1,0,0,100,1],
-  [5,2,"BIPED","TAGC",1,1,0,0,100,1],
+  [5,1,"QUADRUPED","CGAT",1,1,0,0,100,1,"Works with BIPED to determine body type."],
+  [5,2,"BIPED","TAGC",1,1,0,0,100,1,"Works with QUADRUPED to determine body type."],
   [5,3,"UPARM_TAG","ATCG",0,1,4,2,100,1],
   [5,4,"UPARM_Y","CTAG",30,30,50,10,80,100],
   [5,5,"UPARM_GOOFY","ACGT",0,1,2,3,100,1],
   [5,6,"ARM_FORWARD","CTGA",40,-20,60,0,100,1],
   [5,7,"UPARM_ANGLE","GCAT",-30,30,0,-45,100,1],
   [5,8,"WHITE_IS_LETHAL","AGCT",0,0,1,0,100,1],
-  [6,1,"SIZE","ATGC",100,75,35,50,95,100],
+  [6,1,"SIZE","ATGC",100,75,35,50,95,100,"Scales the torso."],
   [6,2,"ASPECT","GCAT",150,310,200,250,95,100],
   [6,3,"SKINNY","GACT",200,100,100,75,100,100],
   [6,4,"CHEST_BIG","ATCG",104,108,102,102,100,100],
@@ -343,7 +343,7 @@ const CLASSIC_FALLBACK = [
   [8,8,"ARM_LENGTH","ATCG",80,120,25,50,90,100],
   [8,9,"ARM_STRETCH","GACT",14,-14,0,0,60,100],
   [8,10,"ARM_SKEW","TCGA",0,20,-20,0,100,100],
-  [8,11,"ARM_NODE_SCALE","CTGA",100,100,130,70,50,100],
+  [8,11,"ARM_NODE_SCALE","CTGA",100,100,130,70,50,100,"Additional scaling of the part connected to arm or uparm slots."],
   [9,1,"HAS_FOOT","TACG",0,1,0,1,100,1],
   [9,2,"FOOT_SIZE","GTAC",12,30,0,20,60,100],
   [9,3,"FOOT_CLOWN","GTAC",0,0,0,30,100,100],
@@ -449,8 +449,8 @@ const CLASSIC_FALLBACK = [
   [17,1,"AGOUTI","ATGC",1,1,0,0,100,1],
   [17,2,"FOOT_IS_HOOF","GACT",1,0,0,1,100,1],
   [17,3,"RACCOON_EYE","GCAT",2,1,0,0,100,1],       // was COON_EYE
-  [17,4,"EAR_COMP","GTCA",1,2,0,0,100,1],
-  [17,5,"TAIL_ALT","CGTA",0,0,1,2,100,1],
+  [17,4,"EAR_COMP","GTCA",1,2,0,0,100,1,"Ear Color"],
+  [17,5,"TAIL_ALT","CGTA",0,0,1,2,100,1,"Tail Color"],
   [17,6,"PAT_SPLIT","CGAT",65,0,100,0,100,100],
   [17,7,"PAT_STRIPE","CTAG",51,0,0,90,100,100],
   [17,8,"PAT_SPOT","ACGT",0,90,51,0,100,100],
@@ -460,9 +460,9 @@ const CLASSIC_FALLBACK = [
   [18,1,"NARCOLEPSY","TCGA",0,0,1,0,100,1],
   [18,2,"SPEED_FACTOR","GCAT",50,30,100,133,75,100],
   [18,3,"NECK_SPEED","AGCT",60,50,25,10,100,10],
-  [18,4,"RAMPAGE","GATC",0,1,0,0,100,1],
+  [18,4,"RAMPAGE","GATC",0,1,0,0,100,1,"Ability to break fences."],
   [18,5,"SPINAL_LOCO","CTGA",2,0,0,1,100,1],
-  [18,6,"HIGH_INTELLECT","CTAG",0,0,1,1,100,1],
+  [18,6,"HIGH_INTELLECT","CTAG",0,0,1,1,100,1,"Note that personality is not affected by genes. Smart horses might refuse to race."],
   [18,7,"L_LEG_SIGNAL","GTCA",2,1,1,1,100,1],
   [18,8,"L_ARM_SIGNAL","CGAT",2,2,2,1,100,1],
   [18,9,"L_TAIL_SIGNAL","ACTG",3,1,4,2,100,1],
@@ -500,6 +500,11 @@ function buildMappingFromArray(srcArray) {
     const priorityStr = row[3];
     const priorityOrder = priorityStr.split('');
     const values = { A: row[4], C: row[5], G: row[6], T: row[7] };
+	let title = desc;
+	if(row.length>=11){
+		title = row[10];
+	}
+			
     completeMapping.set(`${helix}:${zeroBasedPair}`, {
       helix,
       pair: zeroBasedPair,
@@ -508,7 +513,8 @@ function buildMappingFromArray(srcArray) {
       priorityOrder,
       values,
       m: row[8],
-      s: row[9]
+      s: row[9],
+	  title,
     });
   }
   allEntries = Array.from(completeMapping.values()).sort((a,b)=>a.helix-b.helix||a.pair-b.pair);
