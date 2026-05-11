@@ -1,6 +1,11 @@
 /* ===== crispr2-override.css ===== */
 
 /* ---------- Layout adjustments ---------- */
+.helix-btn {
+    min-width: 36px;
+    max-width: 36px;
+}
+
 .right-sidebar {
     width: 360px;                /* increased from 280px */
 }
