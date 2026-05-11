@@ -418,14 +418,14 @@
 			<div class="instructions-box">
     <h3>📘 How to Use</h3>
     <ol>
-        <li><strong>Paste</strong> a full genome sequence into the Source DNA area (or leave empty).</li>
-        <li><strong>Load a preset</strong> (optional) – click "Horse" or "Car" on the right to quickly set up a common gene pool.</li>
+        <li><strong>Paste</strong> a full genome sequence into the Source DNA area.</li>
+        <li><strong>Load a preset</strong> (optional) – click "Horse" or "Car" on the right to load a preset for working with normal horses or cars.</li>
         <li>
             <strong>Edit the gene pool:</strong>
             <ul>
-                <li>🧪 <strong>Source mode</strong> – genes automatically use the DNA bases from your pasted sequence.</li>
-                <li>🧬 <strong>Random mode</strong> – genes use a custom set of bases (like a preset).</li>
-                <li>Click the 🧪/🧬 icon to toggle a gene's mode, or click base buttons directly to switch to Random and change them.</li>
+                <li>🧪 <strong>Source mode</strong> – only use the DNA bases from the source genome sequence.</li>
+                <li>🧬 <strong>Random mode</strong> – use a fixed set of bases (defaults to allow all possible values).</li>
+                <li>Click the 🧪/🧬 icon to toggle a gene's mode, or click the A,C,G,T buttons directly to manage the available bases.</li>
             </ul>
         </li>
         <li><strong>Save your custom preset</strong> (optional) – click “Save current preset” if you want to reuse this gene selection later.</li>
@@ -440,8 +440,8 @@
         <!-- CENTER: Gene editing table -->
         <div class="center-panel">
             <div class="toolbar">
-                <button id="allSourceBtn" class="primary">🔄 All Source</button>
-                <button id="allRandomBtn" class="warning">🎲 All Randomize</button>
+                <button title="Click to only use bases from the source genome." id="allSourceBtn" class="primary">🔄 All Source</button>
+                <button title="Click to utilize all possible base/values." id="allRandomBtn" class="warning">🎲 All Randomize</button>
                 <input type="text" id="filterInput" class="filter-input" placeholder="🔍 Filter genes...">
                 <button id="clearFilterBtn" class="clear-filter-btn">✖</button>
             </div>
