@@ -2,6 +2,7 @@
     box-sizing: border-box;
     font-family: "Segoe UI", "Roboto", "Courier New", monospace;
 }
+/*
 body {
     background: #1e2a2e;
     margin: 0;
@@ -13,9 +14,25 @@ body {
     align-items: flex-start;
     justify-content: center;
 }
+*/
+body {
+    background: #1e2a2e;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;   /* stack header + app-layout vertically */
+    align-items: stretch;     /* allow children to stretch full width */
+}
+
+
 .app-layout {
     display: flex;
-    height: 100vh;
+    /*height: 100vh; */
+	
+	flex: 1;
     width: 100%;
     max-width: 1350px;
     margin: 0 auto;
@@ -23,6 +40,8 @@ body {
     overflow: hidden;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
+
+
 .left-sidebar {
     width: 250px;
     background: #0f172a;
@@ -287,6 +306,8 @@ button.clear-btn:hover {
     padding: 8px 8px;
     background: #11181c;
     position: relative;
+    display: flex;          /* ADD */
+    flex-direction: column; /* ADD */	
     min-width: 0;
 }
 .table-wrapper {
@@ -294,7 +315,8 @@ button.clear-btn:hover {
     border-radius: 20px;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: calc(100vh - 60px);
+	flex: 1;                /* ADD – take all leftover height inside .main-content */
+    /*max-height: calc(100vh - 60px);*/
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     width: 100%;
 }
@@ -324,6 +346,7 @@ button.clear-btn:hover {
     text-align: center;
 }
 .filter-cell {
+	flex-shrink: 0;         /* ADD – stays at top, doesn't shrink */
     display: flex;
     align-items: center;
     gap: 6px;

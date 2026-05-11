@@ -6,14 +6,27 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>CRISPR 2.0</title>
     <link rel="stylesheet" href="crispr.css">
+	<link rel="stylesheet" href="headers.css">
 </head>
 <body>
+    <!-- ====== HEADER BAR ====== -->
+    <header class="header-bar">
+        <div class="header-title">
+            <span>🧬</span> CRISPR 2.0
+        </div>
+        <div class="tools-dropdown" id="toolsDropdown">
+            <button class="tools-btn" id="toolsBtn">
+                🔧 Tools <span class="arrow">▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <!-- Populated by header-links.js -->
+            </div>
+        </div>
+    </header>
+	
 <div class="app-layout">
   <!-- LEFT SIDEBAR -->
   <div class="left-sidebar">
-    <div class="sidebar-header">
-      <h1>🧬 CRISPR 2.0</h1>
-    </div>
 
     <div class="controls-section">
       <div class="btn-group">
@@ -57,8 +70,8 @@
     <!-- REMOVE DIVERSITY BUTTON -->
     <div class="controls-section" style="border-top: none; padding-top: 8px; padding-bottom: 16px">
       <div class="btn-group" style="flex-direction: column; gap: 8px;">
-        <button id="removeDiversityBtn" class="diversity-remove" style="background: #8b5a2b; border-bottom-color: #d49b3a;">🧬 REMOVE DIVERSITY</button>
-        <button id="randomDiversityBtn" class="random-diversity" style="background: #2b6e4c; border-bottom-color: #67b886;">🎲 RANDOM DIVERSITY</button>
+        <button id="removeDiversityBtn" title="Merge genes where possible, without changing the horse (except antler/hat and skin patterns)" class="diversity-remove" style="background: #8b5a2b; border-bottom-color: #d49b3a;">🧬 REMOVE DIVERSITY</button>
+        <button id="randomDiversityBtn" title="Randomize the genes where possible without changing the horse (except antler/hat and skin patterns)" class="random-diversity" style="background: #2b6e4c; border-bottom-color: #67b886;">🎲 RANDOM DIVERSITY</button>
       </div>
     </div>
   </div>
@@ -108,7 +121,11 @@
 
 <div id="toast" class="toast"></div>
 
+
 <script src="mapping.js"></script>
 <script src="crispr.js"></script>
+    <!-- Header links (separate file) -->
+    <script src="headers.js"></script>
+	
 </body>
 </html>

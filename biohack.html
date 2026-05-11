@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>🧬 BioHacker Optimizer</title>
+	<link rel="stylesheet" href="headers.css">
     <style>
         * {
             box-sizing: border-box;
@@ -19,111 +20,7 @@
             color: #e2e8f0;
             overflow: hidden;
         }
-        /* ---- Header Bar ---- */
-        .header-bar {
-            background: #0b1218;
-            border-bottom: 2px solid #2d3a46;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            z-index: 50;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-        .header-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #48b5b5;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .header-title span {
-            font-size: 1.5rem;
-        }
-        .tools-dropdown {
-            position: relative;
-        }
-        .tools-btn {
-            background: #1e293b;
-            border: 2px solid #3b4e6b;
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            cursor: pointer;
-            color: #b9c7d9;
-            font-family: monospace;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .tools-btn:hover {
-            background: #2d3e44;
-            border-color: #48b5b5;
-            color: #fff;
-        }
-        .tools-btn .arrow {
-            font-size: 0.65rem;
-            transition: 0.2s;
-        }
-        .tools-btn.open .arrow {
-            transform: rotate(180deg);
-        }
-        .dropdown-menu {
-            position: absolute;
-            top: 110%;
-            right: 0;
-            background: #0f172a;
-            border: 2px solid #334155;
-            border-radius: 12px;
-            min-width: 200px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            display: none;
-            overflow: hidden;
-        }
-        .dropdown-menu.show {
-            display: block;
-            animation: fadeIn 0.15s ease;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .dropdown-menu a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            color: #cbd5e6;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-family: monospace;
-            transition: 0.15s;
-            border-bottom: 1px solid #1e293b;
-        }
-        .dropdown-menu a:last-child {
-            border-bottom: none;
-        }
-        .dropdown-menu a:hover {
-            background: #1e293b;
-            color: #48b5b5;
-        }
-        .dropdown-menu a .tool-icon {
-            font-size: 1rem;
-            width: 22px;
-            text-align: center;
-        }
+
         /* ---- Main Layout ---- */
         .app-layout {
             display: flex;
@@ -501,7 +398,7 @@
                 🔧 Tools <span class="arrow">▼</span>
             </button>
             <div class="dropdown-menu" id="dropdownMenu">
-                <!-- Populated by header-links.js -->
+                <!-- Populated by headers.js -->
             </div>
         </div>
     </header>
@@ -596,7 +493,7 @@
     <div id="toast" class="toast"></div>
 
     <!-- Header links (separate file) -->
-    <script src="header-links.js"></script>
+    <script src="headers.js"></script>
 
     <script>
         // ====== Embedded bio.csv (r column) ======
@@ -1668,24 +1565,7 @@
             this.value = '';
         });
 
-        // ====== Header dropdown toggle ======
-        document.getElementById('toolsBtn').addEventListener('click', function(e) {
-            e.stopPropagation();
-            const menu = document.getElementById('dropdownMenu');
-            const btn = this;
-            menu.classList.toggle('show');
-            btn.classList.toggle('open');
-        });
 
-        document.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('toolsDropdown');
-            const menu = document.getElementById('dropdownMenu');
-            const btn = document.getElementById('toolsBtn');
-            if (!dropdown.contains(e.target)) {
-                menu.classList.remove('show');
-                btn.classList.remove('open');
-            }
-        });
 
         // ====== Toast ======
         function showToast(message, duration = 2000) {
