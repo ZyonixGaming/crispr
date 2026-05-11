@@ -485,7 +485,17 @@ function computeWeightedValue(entry, allele1, allele2) {
 function parseUserGenes(rawText) {
   const lines=rawText.split(/\r?\n/).filter(l=>l.trim());
   const helixSeqMap=new Map();
-  function sanitizeNuc(c){let u=c.toUpperCase();if("ACGT".includes(u))return u;return getRandomNuc();}
+  function sanitizeNuc(k,c){
+	  let u=c.toUpperCase();
+	  if("ACGT".includes(u)){
+		  return u;
+	  }else if("0123".includes(u)){
+		  const po=window.completeMapping.get(k).priorityOrder;
+		  return po[u];
+	  }else{
+		  return getRandomNuc();
+	  }
+  }
   for(const line of lines){
     const match=line.match(/^(\d+):(.*)$/);if(!match)continue;
     const helix=parseInt(match[1]);const seq=match[2].trim();
@@ -500,8 +510,8 @@ function parseUserGenes(rawText) {
     for(let i=0;i<maxLen;i++){
       const pair=i;const key=`${helix}:${pair}`;
       if(window.completeMapping && window.completeMapping.has(key)){
-        const a1=i<left.length?sanitizeNuc(left[i]):getRandomNuc();
-        const a2=i<right.length?sanitizeNuc(right[i]):getRandomNuc();
+        const a1=i<left.length?sanitizeNuc(key,left[i]):getRandomNuc();
+        const a2=i<right.length?sanitizeNuc(key,right[i]):getRandomNuc();
         result.set(key,{allele1:a1,allele2:a2});
       }
     }
@@ -583,7 +593,7 @@ function renderTable(){
   let filtered=currentGenePairs.filter(p=>p.desc.toLowerCase().includes(currentFilter.toLowerCase()));
   const hasCompare=compareModeActive;
   const thead=document.getElementById("dynamicThead");
-  thead.innerHTML=`<th style="width:45px;">⭐</th><th>Helix</th><th>Pair</th><th>m</th><th>Description <a href="https://horseygame.miraheze.org/wiki/Genome" target="_blank">(?)</a></th><th colspan="2">Pair 1</th><th colspan="2">Pair 2</th><th>Value <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3704208519" target="_blank">(?)</a></th>${hasCompare?"<th>Compare</th>":""}`;
+  thead.innerHTML=`<th style="width:45px;">⭐</th><th>Helix</th><th>Position</th><th>m</th><th>Description <a href="https://horseygame.miraheze.org/wiki/Genome" target="_blank">(?)</a></th><th colspan="2">Pair 1</th><th colspan="2">Pair 2</th><th>Value <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3704208519" target="_blank">(?)</a></th>${hasCompare?"<th>Compare</th>":""}`;
   let html="";
   for(let idx=0;idx<filtered.length;idx++){
     const p=filtered[idx];
@@ -714,7 +724,7 @@ function loadFromUrl() {
 }
 
 document.getElementById("rawGeneInput").value = "";
-loadFromUrl();
+
 // ========== Initialisation after XML is loaded ==========
 window.addEventListener('load', async () => {
   try {
@@ -722,7 +732,7 @@ window.addEventListener('load', async () => {
   } catch (err) {
     showToast('Failed to load gene data from XML', 'error');
     console.error(err);
-    //return;
+    return;
   }
 
   // Default category handling
@@ -743,5 +753,5 @@ window.addEventListener('load', async () => {
   }
 
   // Load DNA from URL parameter (if any)
-
+  loadFromUrl();
 });

@@ -92,8 +92,8 @@ window.renderTable = function () {
     thead.innerHTML =
         `<th style="width:45px;">⭐</th>
          <th>Helix</th>
-         <th>Pair</th>
-         <th>Description</th>
+         <th>Position</th>
+         <th>Description <a href="https://horseygame.miraheze.org/wiki/Genome" target="_blank">(?)</a></th>
          <th>Value</th>`;
 
     let html = '';
