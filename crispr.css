@@ -234,7 +234,7 @@ button.clear-btn:hover {
 }
 .bookmarks-list,
 .saved-dna-list {
-    max-height: 340px;
+    /*max-height: 340px; */
     overflow-y: auto;
     text-align: left;
 }
