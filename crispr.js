@@ -634,7 +634,26 @@ document.getElementById("addCategoryBtn").addEventListener("click",addCategory);
 document.getElementById("exportLibBtn").addEventListener("click",exportLibrary);
 document.getElementById("importLibBtn").addEventListener("click",importLibrary);
 
+document.addEventListener('keydown', function(event) {
+    // Check for Ctrl + C (Copy)
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
+        exportData();
+        
+        // event.preventDefault(); // Uncomment to stop browser's default copy behavior
+    }
 
+    // Check for Ctrl + V (Paste)
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'v') {
+		const myTextArea = document.getElementById('compareGeneInput');
+
+		if (document.activeElement === myTextArea) {
+			
+		} else {
+			pasteClipboard();
+		}        
+        // event.preventDefault(); // Uncomment to stop browser's default paste behavior
+    }
+});
 
 // Load ?dna= on start
 function loadFromUrl() {
@@ -657,7 +676,7 @@ function loadFromUrl() {
 document.getElementById("rawGeneInput").value = "";
 
 // ========== Initialisation after XML is loaded ==========
- loadFromUrl();
+loadFromUrl();
 window.addEventListener('load', async () => {
   try {
     await loadGeneDataFromXml();   // defined in mapping.js
@@ -685,5 +704,5 @@ window.addEventListener('load', async () => {
   }
 
   // Load DNA from URL parameter (if any)
- 
+  
 });
