@@ -716,7 +716,7 @@ document.addEventListener('keydown', function(event) {
     // Check for Ctrl + V (Paste)
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'v') {
         
-        pasteClipboard(); 
+        if(!compareModeActive) pasteClipboard(); 
         // event.preventDefault(); // Uncomment to stop browser's default paste behavior
     }
 });
