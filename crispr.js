@@ -715,8 +715,13 @@ document.addEventListener('keydown', function(event) {
 
     // Check for Ctrl + V (Paste)
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'v') {
-        
-        if(!compareModeActive) pasteClipboard(); 
+		const myTextArea = document.getElementById('compareGeneInput');
+
+		if (document.activeElement === myTextArea) {
+			
+		} else {
+			pasteClipboard();
+		}        
         // event.preventDefault(); // Uncomment to stop browser's default paste behavior
     }
 });
