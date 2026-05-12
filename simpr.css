@@ -7,7 +7,10 @@
 }
 
 .right-sidebar {
-    width: 360px;                /* increased from 280px */
+	width:100%;
+    
+	max-width:350px;
+	min-width:350px;
 }
 .main-content {
     /* flex: 1 already set, shrinks to accommodate wider sidebar */
@@ -26,7 +29,8 @@
 .gene-table {
 	margin-bottom:300px;
 	max-width:800px;
-	min-width:700px;
+	width:100%;
+	min-width:300px;
 }
 
 .selected-option {
@@ -132,15 +136,25 @@
 
 /* In bookmark lists, dropdown wider */
 .bookmark-item .custom-dropdown {
-    min-width: 140px;
-    max-width: 150px;
+    min-width: 120px;
+    max-width: 120px;
 }
 .bookmark-item .selected-option {
-    padding: 4px 8px;
-    font-size: 0.75rem;
+    padding: 3px 6px;
+    font-size: 0.6rem;
 }
 .bookmark-item .selected-option .value-part {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+}
+.bookmark-item .selected-option .bases-part {
+    font-size: 0.6rem;
+}
+
+.bookmark-info strong {
+	font-size: 0.63rem;
+}
+.bookmark-info{
+	font-size: 0.67rem;
 }
 
 button[title="Load into compare"] {
