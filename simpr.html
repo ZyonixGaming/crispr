@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="headers.css">
     <!-- Override styles for custom dropdowns and layout -->
     <link rel="stylesheet" href="simpr.css">
+	<link rel="stylesheet" href="mobile.css">
 </head>
 <body>
     <!-- ====== HEADER BAR (unchanged) ====== -->
@@ -112,6 +113,9 @@
     </div>
 
     <div id="toast" class="toast"></div>
+	
+	<button id="mobileRightToggle" title="Bookmarks &amp; Library">📑</button>
+	<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Original scripts (unchanged) -->
     <script src="mapping.js"></script>
@@ -121,5 +125,8 @@
 
     <!-- Override script – redefines functions after load -->
     <script src="simpr.js"></script>
+	<script src="mobile.js"></script>
+	
+	
 </body>
 </html>

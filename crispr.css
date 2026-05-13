@@ -309,6 +309,7 @@ button.clear-btn:hover {
     display: flex;          /* ADD */
     flex-direction: column; /* ADD */	
     min-width: 0;
+	max-width: 700px;
 }
 .table-wrapper {
     background: #0f172a;
@@ -319,10 +320,13 @@ button.clear-btn:hover {
     /*max-height: calc(100vh - 60px);*/
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     width: 100%;
+    min-width: 600px;
+	max-width: 730px;	
 }
 .gene-table {
     width: auto;
-    min-width: 730px;
+    min-width: 600px;
+	max-width: 730px;
     border-collapse: collapse;
     font-size: 12px;
     font-family: "Courier New", "Fira Code", monospace;
@@ -435,11 +439,11 @@ select.nuc-select {
     font-family: monospace;
     font-weight: bold;
     font-size: 0.85rem;
-    border-radius: 28px;
-    padding: 5px 10px;
+    border-radius: 24px;
+    padding: 4px 8px;
     cursor: pointer;
     text-align: left;
-    width: 100px;
+    width: 90px;
     transition: 0.1s;
     border: 1px solid #4b5563;
     background-color: #0a0f18;
