@@ -55,4 +55,7 @@
         width: 100%;
 		min-width:
     }
+	.right-sidebar {
+		right: -342px;
+	}
 }
