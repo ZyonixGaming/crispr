@@ -58,4 +58,20 @@
 	.right-sidebar {
 		right: -342px;
 	}
+.option-item {
+    padding: 4px 8px;
+    gap: 4px;
+    font-size: 0.7rem;
+}	
+.option-item .value-part {
+    font-weight: 500;
+}
+.option-item .bases-part {
+    font-size: 0.68rem;
+}
+.dropdown-options {
+    max-height: 280px;
+    min-width: 130px;               /* will be overridden by JS to match button width */
+}
+	
 }
