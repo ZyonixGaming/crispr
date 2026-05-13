@@ -40,6 +40,15 @@
         width: 160px;
     }
 
+}
+
+@media (max-width: 1070px) {
+	
+    /* Shrink left sidebar */
+    .left-sidebar {
+        width: 250px;
+    }
+
     /* Right sidebar becomes a fixed floating panel */
     .right-sidebar {
         position: fixed;
@@ -67,4 +76,15 @@
     .sidebar-overlay.active {
         display: block;
     }
+	
+}
+
+
+@media (max-width: 800px) {
+    /* Shrink left sidebar */
+    .left-sidebar {
+        width: 160px;
+    }
+	
+	
 }
