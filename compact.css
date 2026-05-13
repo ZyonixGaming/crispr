@@ -1,0 +1,58 @@
+/* ===== Compact layout – ≤600 px ===== */
+@media (max-width: 600px) {
+    /* Hide the left sidebar entirely */
+    .left-sidebar {
+        display: none;
+    }
+
+    /* Main content takes full width */
+    .main-content {
+        max-width: 100%;
+        width: 100%;
+        padding: 4px;
+    }
+
+    /* The top bar that will hold the moved buttons and helix dropdown */
+    #compactTopBar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 4px;
+        background: #0f172a;
+        border-bottom: 1px solid #2d3a4a;
+    }
+
+    /* Make the moved buttons smaller */
+    #compactTopBar button {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+        flex: none;
+    }
+
+    /* Helix dropdown in the top bar */
+    #helixDropdown {
+        background: #0f1720;
+        border: 1px solid #4b5563;
+        color: #e2e8f0;
+        border-radius: 20px;
+        padding: 4px 8px;
+        font-family: monospace;
+        font-size: 0.75rem;
+        min-width: 60px;
+        cursor: pointer;
+    }
+
+    /* Table wrapper – remove extra padding */
+    .table-wrapper {
+        border-radius: 12px;
+		min-width:300px;
+    }
+
+    /* Make the table scrollable if needed */
+    .gene-table {
+        min-width: auto;
+        width: 100%;
+		min-width:
+    }
+}
