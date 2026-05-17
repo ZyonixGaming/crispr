@@ -75,6 +75,23 @@ function getComboAnnotation(combo, entry) {
 		}
 		
 	}
+	if (desc== 'TEETH_SHAPE'){
+		if(val==3){
+			return `${val} (🥩)`;
+		}else{
+			return `${val}`;
+		}
+		
+	}	
+	if (desc== 'EAR_SIZE'){
+		if(val<13){
+			return `${val} (deaf)`;
+		}else{
+			return `${val}`;
+		}
+		
+	}	
+	
 
     // *_TAG genes
     if (desc.endsWith('_TAG')) {
