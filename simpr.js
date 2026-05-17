@@ -66,6 +66,15 @@ function getComboAnnotation(combo, entry) {
         const name = jointNames[val] !== undefined ? jointNames[val] : val;
         return `${val} (${name})`;
     }
+	
+	if (desc== 'DERRIERE'){
+		if(val<13){
+			return `${val} (hidden)`;
+		}else{
+			return `${val}`;
+		}
+		
+	}
 
     // *_TAG genes
     if (desc.endsWith('_TAG')) {
