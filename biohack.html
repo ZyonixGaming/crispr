@@ -478,6 +478,16 @@
                 </div>
                 <textarea id="flask2Output" rows="12" readonly></textarea>
             </div>
+
+<!-- XML Export -->
+<div style="margin-top: 12px; border-top: 1px solid #2d3a46; padding-top: 12px;">
+    <h3>📄 XML Export</h3>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <button id="downloadXmlBtn" class="success">📥 Download custom.xml</button>
+        <!--<button id="copyXmlBtn" class="primary">📋 Copy XML to clipboard</button>-->
+    </div>
+</div>
+			
             <div style="border-top:1px solid #2d3a46; padding-top:12px;">
                 <h3>💾 Presets</h3>
                 <button id="savePresetBtn" class="primary" style="margin-bottom:8px;">💾 Save current preset</button>
@@ -1723,6 +1733,60 @@
         });
 
 
+		
+// ====== XML Export ======
+function generateXmlString() {
+    let xml = '<pops>\n  <pop name="custom">\n';
+    geneList.forEach(gene => {
+		let idxpool = 0;
+        const stateObj = geneStates.get(gene.key);
+        if (!stateObj) return;
+        const selected = stateObj.selectedBases;
+        if (selected.size === 0) return; // skip if no base selected (should not happen)
+        const priority = gene.priorityOrder; // array of 4 chars from n
+        const attrs = [];
+        priority.forEach((base, idx) => {
+            if (selected.has(base)) {
+				idxpool += idx;
+                attrs.push(`p${idx}="1"`);
+            }
+        });
+        if (attrs.length > 0 && idxpool > 0) {
+            xml += `    <gene name="${gene.name}" ${attrs.join(' ')}/>\n`;
+        }
+    });
+    xml += '  </pop>\n</pops>';
+    return xml;
+}
+
+document.getElementById('downloadXmlBtn').addEventListener('click', () => {
+    const xmlStr = generateXmlString();
+    const blob = new Blob([xmlStr], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'custom.xml';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('✅ XML downloaded as custom.xml');
+});
+
+/*
+document.getElementById('copyXmlBtn').addEventListener('click', async () => {
+    const xmlStr = generateXmlString();
+    try {
+        await navigator.clipboard.writeText(xmlStr);
+        showToast('📋 XML copied to clipboard');
+    } catch {
+        showToast('❌ Failed to copy XML', 1500);
+    }
+});
+*/
+
+
+
 
         // ====== Toast ======
         function showToast(message, duration = 2000) {
@@ -1749,6 +1813,7 @@
         }
 
         init();
+		
     </script>
 </body>
 </html>
