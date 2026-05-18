@@ -65,14 +65,14 @@
 		font-size: 0.72rem !important;
 	}	
 	
-.selected-option .value-part {
-    font-weight: 500 !important;
-    font-size: 0.72rem !important;
-}
+	.selected-option .value-part {
+		font-weight: 500 !important;
+		font-size: 0.72rem !important;
+	}
 
-.selected-option .bases-part {
-    font-size: 0.7rem !important;
-}
+	.selected-option .bases-part {
+		font-size: 0.7rem !important;
+	}
 	
 	.option-item .value-part {
 		font-weight: 500 !important;
@@ -90,4 +90,111 @@
 		max-width: 130px;
 	}
 	
+}
+
+/* ===== Ultra‑compact – ≤400px ===== */
+@media (max-width: 400px) {
+    /* Main content – remove all padding */
+    .main-content {
+        padding: 2px 0;
+    }
+
+    /* Table cells – minimal padding */
+    .gene-table th,
+    .gene-table td {
+        padding: 4px 2px;
+        font-size: 0.65rem;
+    }
+
+    /* Filter bar – stack vertically and shrink */
+    .filter-cell {
+        flex-wrap: wrap;
+        gap: 2px;
+        padding: 4px;
+    }
+    .filter-input {
+        max-width: 100%;
+        font-size: 0.65rem;
+        padding: 4px 8px;
+        margin: 0;
+    }
+    .clear-filter-btn {
+        width: 28px;
+        max-width: 28px;
+        padding: 2px 4px;
+        font-size: 0.6rem;
+    }
+
+    /* Compact top bar – reduce gap */
+    #compactTopBar {
+        gap: 4px;
+        padding: 4px 2px;
+    }
+    #compactTopBar button {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+    }
+    #helixDropdown {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    /* Custom dropdowns – smaller text */
+    .custom-dropdown {
+        min-width: 90px;
+        max-width: 100px;
+    }
+    .selected-option {
+        padding: 3px 6px;
+        font-size: 0.7rem;
+    }
+    .selected-option .value-part {
+        font-size: 0.75rem;
+    }
+    .selected-option .bases-part {
+        font-size: 0.65rem;
+    }
+    .dropdown-options .option-item {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+
+    /* Textarea – reduce height */
+    #rawGeneInput {
+        rows: 8;   /* attribute override */
+        min-height: 80px;
+    }
+
+    /* Bookmark items – tighter */
+    .bookmark-item {
+        padding: 4px 6px;
+        font-size: 0.65rem;
+    }
+    .bookmark-item .custom-dropdown {
+        min-width: 100px;
+        max-width: 110px;
+    }
+
+    /* Right sidebar – narrower when open */
+    .right-sidebar.open {
+        width: 280px;
+        max-width: 90vw;
+    }
+
+    /* Hide less critical elements */
+    .desc-td {
+        max-width: 120px;        /* keep description short */
+    }
+    /* Optional: hide the helix dropdown label in the compact top bar */
+    .filter-cell label {
+        display: none;
+    }
+
+    /* Shrink header bar slightly */
+    .header-bar {
+        padding: 6px 12px;
+    }
+    .header-title {
+        font-size: 1rem;
+    }
 }

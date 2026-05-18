@@ -35,12 +35,22 @@ function getCombosForEntry(entry) {
 }
 
 // Current pair string for a gene (dominant + recessive based on current alleles)
+/*
 function currentPairStr(gp) {
     const entry = window.completeMapping.get(`${gp.helix}:${gp.pair}`);
     if (!entry) return 'AA';
     const dom = getDominantNuc(gp.allele1, gp.allele2, entry.priorityOrder);
     const rec = dom === gp.allele1 ? gp.allele2 : gp.allele1;
     return dom + rec;
+}
+*/
+
+function currentPairStr(gp, invert) {
+    const entry = window.completeMapping.get(`${gp.helix}:${gp.pair}`);
+    if (!entry) return 'AA';
+    const dom = getDominantNuc(gp.allele1, gp.allele2, entry.priorityOrder);
+    const rec = dom === gp.allele1 ? gp.allele2 : gp.allele1;
+    return invert ? rec + dom : dom + rec;
 }
 
 // ---------- Annotation string for a combo (includes value + special tags) ----------
@@ -129,25 +139,31 @@ window.renderTable = function () {
             g.helix === gp.helix && g.pair === gp.pair
         );
         const rowClass = gp.helix % 2 === 0 ? 'helix-even' : 'helix-odd';
+		const key = `${gp.helix}:${gp.pair}`;
         const isBookmarked = bookmarks.has(`${gp.helix}:${gp.pair}`);
 
+		
         const combos = getCombosForEntry(gp);
-        const curPair = currentPairStr(gp);
+		const curPairNormal = currentPairStr(gp, false);   // always dom+rec
+		const invert = window.invertedGenes.get(key) || false;
+		const descClass = invert ? 'desc-td inverted' : 'desc-td';
+		const displayPair = invert ? (curPairNormal.charAt(1) + curPairNormal.charAt(0)) : curPairNormal;		
+        //const curPair = currentPairStr(gp);
         const entry = window.completeMapping.get(`${gp.helix}:${gp.pair}`);
-        const curCombo = combos.find(c => c.pairStr === curPair);
+        const curCombo = combos.find(c => c.pairStr === curPairNormal );
 
         // Build custom dropdown
         const pairKey = `${gp.helix}-${gp.pair}`;
         let dropdownHtml = `<div class="custom-dropdown" id="dropdown-${pairKey}">
             <div class="selected-option" onclick="toggleDropdown('${pairKey}')">
                 <span class="value-part">${curCombo ? getComboAnnotation(curCombo, entry) : curCombo.value}</span>
-                <span class="bases-part">${coloredPairSpans(curPair)}</span>
+                <span class="bases-part">${coloredPairSpans(displayPair )}</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="dropdown-options" style="display:none;">`;
 
         for (const combo of combos) {
-            const selectedClass = combo.pairStr === curPair ? ' selected' : '';
+            const selectedClass = combo.pairStr === displayPair  ? ' selected' : '';
             dropdownHtml +=
                 `<div class="option-item${selectedClass}"
                       data-value="${combo.value}"
@@ -166,7 +182,8 @@ window.renderTable = function () {
             </td>
             <td class="helix-col">${gp.helix}</td>
             <td class="pair-col">${gp.pair}</td>
-            <td class="desc-td" title="${gp.title}">${gp.desc}</td>
+            <td class="${descClass}" title="${gp.title}">${gp.desc}</td>
+			
             <td>${dropdownHtml}</td>
         </tr>`;
     }
@@ -193,20 +210,23 @@ window.renderBookmarksList = function () {
         if (!gp) continue;
 
         const combos = getCombosForEntry(gp);
-        const curPair = currentPairStr(gp);
-        const curCombo = combos.find(c => c.pairStr === curPair);
+		const curPairNormal = currentPairStr(gp, false);   // always dom+rec
+		const invert = window.invertedGenes.get(key) || false;
+		const displayPair = invert ? (curPairNormal.charAt(1) + curPairNormal.charAt(0)) : curPairNormal;		
+        //const curPair = currentPairStr(gp);
+        const curCombo = combos.find(c => c.pairStr === curPairNormal);
 
         const pairKey = `bkm-${h}-${p}`;
         let dropdownHtml = `<div class="custom-dropdown" id="dropdown-${pairKey}">
             <div class="selected-option" onclick="toggleDropdown('${pairKey}')">
                 <span class="value-part">${curCombo ? getComboAnnotation(curCombo, entry) : curCombo.value}</span>
-                <span class="bases-part">${coloredPairSpans(curPair)}</span>
+                <span class="bases-part">${coloredPairSpans(displayPair)}</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="dropdown-options" style="display:none;">`;
 
         for (const combo of combos) {
-            const selectedClass = combo.pairStr === curPair ? ' selected' : '';
+            const selectedClass = combo.pairStr === displayPair ? ' selected' : '';
             dropdownHtml +=
                 `<div class="option-item${selectedClass}"
                       data-value="${combo.value}"
@@ -274,6 +294,80 @@ function selectOption(pairKey, pairStr, element) {
     closeAllDropdowns();
 }
 
+function updateGeneDropdowns(helix, pair) {
+    const key = `${helix}:${pair}`;
+    const gp = currentGenePairs.find(g => g.helix === helix && g.pair === pair);
+    if (!gp) return;
+    const entry = window.completeMapping.get(key);
+    const invert = window.invertedGenes.get(key) || false;
+    const combos = getCombosForEntry(gp);
+    const curPairNormal = currentPairStr(gp, false); // always dom+rec
+    const displayPair = currentPairStr(gp, invert);
+
+    // Update table dropdown
+    const tableDropdown = document.getElementById(`dropdown-${helix}-${pair}`);
+    if (tableDropdown) {
+        const selectedOption = tableDropdown.querySelector('.selected-option');
+        const optionsContainer = tableDropdown.querySelector('.dropdown-options');
+        if (selectedOption) {
+            selectedOption.querySelector('.value-part').textContent = getComboAnnotation(combos.find(c => c.pairStr === curPairNormal), entry);
+            selectedOption.querySelector('.bases-part').innerHTML = coloredPairSpans(displayPair);
+        }
+        if (optionsContainer) {
+            // Rebuild options with updated displayed pair
+            let optsHtml = '';
+            for (const combo of combos) {
+                const selectedClass = combo.pairStr === curPairNormal ? ' selected' : '';
+                const showPair = invert ? combo.allele2 + combo.allele1 : combo.pairStr;
+                optsHtml += `<div class="option-item${selectedClass}"
+                      data-value="${combo.value}"
+                      data-pair="${combo.pairStr}"
+                      onclick="selectOption('${helix}-${pair}', '${combo.pairStr}', this)">
+                      <span class="value-part">${getComboAnnotation(combo, entry)}</span>
+                      <span class="bases-part">${coloredPairSpans(showPair)}</span>
+                  </div>`;
+            }
+            optionsContainer.innerHTML = optsHtml;
+        }
+    }
+
+    // Update bookmark dropdown if it exists
+    const bkmDropdown = document.getElementById(`dropdown-bkm-${helix}-${pair}`);
+    if (bkmDropdown) {
+        const selectedOption = bkmDropdown.querySelector('.selected-option');
+        const optionsContainer = bkmDropdown.querySelector('.dropdown-options');
+        if (selectedOption) {
+            selectedOption.querySelector('.value-part').textContent = getComboAnnotation(combos.find(c => c.pairStr === curPairNormal), entry);
+            selectedOption.querySelector('.bases-part').innerHTML = coloredPairSpans(displayPair);
+        }
+        if (optionsContainer) {
+            let optsHtml = '';
+            for (const combo of combos) {
+                const selectedClass = combo.pairStr === curPairNormal ? ' selected' : '';
+                const showPair = invert ? combo.allele2 + combo.allele1 : combo.pairStr;
+                optsHtml += `<div class="option-item${selectedClass}"
+                      data-value="${combo.value}"
+                      data-pair="${combo.pairStr}"
+                      onclick="selectOption('bkm-${helix}-${pair}', '${combo.pairStr}', this)">
+                      <span class="value-part">${getComboAnnotation(combo, entry)}</span>
+                      <span class="bases-part">${coloredPairSpans(showPair)}</span>
+                  </div>`;
+            }
+            optionsContainer.innerHTML = optsHtml;
+        }
+    }
+	const row = document.querySelector(`tr[data-helix="${helix}"][data-pair="${pair}"]`);
+	if (row) {
+		const descCell = row.querySelector('.desc-td');
+		if (descCell) {
+			descCell.classList.toggle('inverted', !!invert);
+		}
+	}
+
+	
+	syncTextareaFromTable();
+}
+
 function closeAllDropdowns() {
     document.querySelectorAll('.dropdown-options').forEach(opt => opt.style.display = 'none');
 }
@@ -285,11 +379,43 @@ document.addEventListener('click', function(e) {
     }
 });
 
+
+document.querySelector('#geneTable tbody').addEventListener('click', function(e) {
+    const descTd = e.target.closest('.desc-td');
+    if (!descTd) return;
+    const tr = descTd.closest('tr');
+    if (!tr) return;
+    const helix = parseInt(tr.dataset.helix);
+    const pair = parseInt(tr.dataset.pair);
+    const key = `${helix}:${pair}`;
+
+    // Toggle invert flag
+    const current = window.invertedGenes.get(key) || false;
+    window.invertedGenes.set(key, !current);
+
+    // Swap the stored alleles so the textarea order matches the new mode
+    const gp = currentGenePairs.find(g => g.helix === helix && g.pair === pair);
+    if (gp) {
+        [gp.allele1, gp.allele2] = [gp.allele2, gp.allele1];
+    }
+
+    // Update the textarea to reflect the new allele order
+    syncTextareaFromTable();
+
+    // Refresh only the dropdowns of the affected gene (table + bookmark)
+    updateGeneDropdowns(helix, pair);
+
+    // Toggle a visual “inverted” class on the description cell
+    descTd.classList.toggle('inverted', !current);
+});
+
+
 // Close on scroll/resize (recalculate position is lost)
 window.addEventListener('scroll', closeAllDropdowns, true);
 window.addEventListener('resize', closeAllDropdowns);
 
 // ---------- Core update: change a gene’s allele pair ----------
+/*
 function applyCombinationChange(helix, pair, newPairStr) {
     const gp = currentGenePairs.find(g => g.helix === helix && g.pair === pair);
     if (!gp) return;
@@ -303,6 +429,28 @@ function applyCombinationChange(helix, pair, newPairStr) {
     syncTextareaFromTable();          // update raw text + URL
     renderTable();                    // redraw table
     renderBookmarksList();            // update bookmark dropdowns
+}*/
+function applyCombinationChange(helix, pair, newPairStr) {
+    const gp = currentGenePairs.find(g => g.helix === helix && g.pair === pair);
+    if (!gp) return;
+    const combos = getCombosForEntry(gp);
+    const chosen = combos.find(c => c.pairStr === newPairStr);
+    if (!chosen) return;
+
+    const key = `${helix}:${pair}`;
+    const invert = window.invertedGenes.get(key) || false;
+    if (invert) {
+        // Inverted: newPairStr is still "dom+rec", so we swap
+        gp.allele1 = chosen.allele2;
+        gp.allele2 = chosen.allele1;
+    } else {
+        gp.allele1 = chosen.allele1;
+        gp.allele2 = chosen.allele2;
+    }
+
+    syncTextareaFromTable();
+    renderTable();
+    renderBookmarksList();
 }
 
 // ---------- Disable removed features ----------
@@ -327,6 +475,28 @@ window.scrollToPair = function (h, p) {
     }
 };
 
+window.invertedGenes = new Map();
+function autoDetectInvertFlags() {
+    currentGenePairs.forEach(gp => {
+        const key = `${gp.helix}:${gp.pair}`;
+        if (gp.allele1 === gp.allele2) {
+            window.invertedGenes.delete(key);   // same allele → normal mode
+            return;
+        }
+        const entry = window.completeMapping.get(key);
+        if (!entry) return;
+        const dom = getDominantNuc(gp.allele1, gp.allele2, entry.priorityOrder);
+        // Normal = dominant first. If current allele1 is NOT dominant, it's inverted.
+        const isInverted = (gp.allele1 !== dom);
+        if (isInverted) {
+            window.invertedGenes.set(key, true);
+        } else {
+            window.invertedGenes.delete(key);
+        }
+    });
+}
+
+
 const _originalLoadBookmarks = loadBookmarks;
 loadBookmarks = function () {
     _originalLoadBookmarks();
@@ -342,4 +512,13 @@ loadBookmarks = function () {
         defaults.forEach(key => bookmarks.add(key));
         saveBookmarks();          // saves to localStorage & refreshes the bookmark list
     }
+};
+
+
+const _originalParse = parseAndLoadFromTextarea;
+parseAndLoadFromTextarea = function() {
+    _originalParse();                    // call original (creates currentGenePairs)
+    autoDetectInvertFlags();             // set invert flags according to textarea
+    renderTable();                       // re‑render to show correct pair orientation
+    renderBookmarksList();
 };

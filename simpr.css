@@ -160,3 +160,17 @@
 button[title="Load into compare"] {
     display: none !important;
 }
+
+.desc-td {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.desc-td:hover {
+    background: rgba(72, 181, 181, 0.15);
+}
+
+.desc-td.inverted {
+    text-decoration: underline;
+    text-decoration-color: #676767;
+    text-underline-offset: 2px;
+}
